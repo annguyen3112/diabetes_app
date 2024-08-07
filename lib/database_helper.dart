@@ -34,6 +34,17 @@ class DatabaseHelper {
 
   Future<void> _onCreate(Database db, int version) async {
     await db.execute('''
+      CREATE TABLE users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        phone TEXT,
+        birthdate TEXT,
+        gender TEXT,
+        password TEXT
+      )
+    ''');
+
+    await db.execute('''
       CREATE TABLE blood_sugar (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER,
@@ -141,6 +152,11 @@ class DatabaseHelper {
     });
   }
 
+  Future<int> insertUser(Map<String, dynamic> user) async {
+    final db = await database;
+    return await db.insert('users', user);
+  }
+
   Future<List<Lesson>> getLessons() async {
     final db = await database;
     final res = await db.query('lessons');
@@ -148,6 +164,3 @@ class DatabaseHelper {
     return list;
   }
 }
-
-
-
