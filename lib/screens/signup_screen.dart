@@ -1,6 +1,7 @@
 import 'package:diabetes_app/screens/login_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class SignupScreen extends StatefulWidget {
   @override
@@ -9,6 +10,33 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   bool passToggle = true;
+  String? _selectedGender = 'Nam';
+  DateTime? _selectedDate;
+  final TextEditingController _dateController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+
+  @override
+  void dispose() {
+    _dateController.dispose();
+    _phoneController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate ?? DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+    if (pickedDate != null && pickedDate != _selectedDate) {
+      setState(() {
+        _selectedDate = pickedDate;
+        _dateController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -24,18 +52,24 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
               SizedBox(height: 15),
               Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      labelText: "Họ và tên",
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.person),
-                    ),
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+                child: TextField(
+                  decoration: InputDecoration(
+                    labelText: "Họ và tên",
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.person),
                   ),
+                ),
               ),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 8, horizontal: 15),
                 child: TextField(
+                  controller: _phoneController,
+                  keyboardType: TextInputType.phone,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(10),
+                  ],
                   decoration: InputDecoration(
                     labelText: "Số điện thoại",
                     border: OutlineInputBorder(),
@@ -46,21 +80,62 @@ class _SignupScreenState extends State<SignupScreen> {
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 8, horizontal: 15),
                 child: TextField(
+                  controller: _dateController,
+                  readOnly: true,
                   decoration: InputDecoration(
                     labelText: "Ngày sinh",
                     border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.date_range),
                   ),
+                  onTap: () {
+                    _selectDate(context);
+                  },
                 ),
               ),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-                child: TextField(
-                  decoration: InputDecoration(
-                    labelText: "Giới tính",
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.person),
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.male_rounded),
+                        SizedBox(width: 12),
+                        Text(
+                          "Giới tính",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: RadioListTile<String>(
+                            title: const Text('Nam'),
+                            value: 'Nam',
+                            groupValue: _selectedGender,
+                            onChanged: (String? value) {
+                              setState(() {
+                                _selectedGender = value!;
+                              });
+                            },
+                          ),
+                        ),
+                        Expanded(
+                          child: RadioListTile<String>(
+                            title: const Text('Nữ'),
+                            value: 'Nữ',
+                            groupValue: _selectedGender,
+                            onChanged: (String? value) {
+                              setState(() {
+                                _selectedGender = value!;
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
               Padding(
@@ -72,15 +147,9 @@ class _SignupScreenState extends State<SignupScreen> {
                     border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.lock),
                     suffixIcon: InkWell(
-                      onTap: (){
-                        if (passToggle == true) {
-                          passToggle = false;
-                        }
-                        else {
-                          passToggle = true;
-                        }
+                      onTap: () {
                         setState(() {
-
+                          passToggle = !passToggle;
                         });
                       },
                       child: passToggle
@@ -99,7 +168,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     color: Color(0xFF7165D6),
                     borderRadius: BorderRadius.circular(10),
                     child: InkWell(
-                      onTap: (){
+                      onTap: () {
                         Navigator.push(context, MaterialPageRoute(
                           builder: (context) => LoginScreen(),
                         ));
@@ -133,7 +202,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                   ),
                   TextButton(
-                    onPressed: (){
+                    onPressed: () {
                       Navigator.push(context, MaterialPageRoute(
                         builder: (context) => LoginScreen(),
                       ));
