@@ -181,4 +181,19 @@ class DatabaseHelper {
     List<Lesson> list = res.isNotEmpty ? res.map((c) => Lesson.fromMap(c)).toList() : [];
     return list;
   }
+
+  Future<Map<String, dynamic>?> getUserByPhoneAndPassword(String phone, String password) async {
+    final db = await instance.database;
+    final result = await db.query(
+      'users',
+      where: 'phone = ? AND password = ?',
+      whereArgs: [phone, password],
+    );
+
+    if (result.isNotEmpty) {
+      return result.first;
+    } else {
+      return null;
+    }
+  }
 }
