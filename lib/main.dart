@@ -1,6 +1,6 @@
 import 'package:diabetes_app/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
-// import 'database_helper.dart';
+//import 'database.dart';
 
 void main() {
   runApp(MyApp());

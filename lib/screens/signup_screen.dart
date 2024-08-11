@@ -2,8 +2,8 @@ import 'package:diabetes_app/screens/login_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:diabetes_app/database_helper.dart';
+//import 'package:sqflite/sqflite.dart';
+import 'package:diabetes_app/database.dart';
 
 class SignupScreen extends StatefulWidget {
   @override
@@ -44,7 +44,7 @@ class _SignupScreenState extends State<SignupScreen> {
     }
   }
 
-  Future<void> _registerUser() async {
+  Future<void> _registerUser(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       final user = {
         'name': _nameController.text,
@@ -54,18 +54,31 @@ class _SignupScreenState extends State<SignupScreen> {
         'password': _passwordController.text,
       };
 
-      await DatabaseHelper().insertUser(user);
-      Navigator.push(context, MaterialPageRoute(
-        builder: (context) => LoginScreen(),
-      ));
+      await DatabaseHelper.instance.insertUser(user);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Đăng ký thành công!"),
+          duration: Duration(seconds: 2),
+        ),
+      );
+
+      await Future.delayed(Duration(seconds: 2));
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.white,
-      child: SingleChildScrollView(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Đăng ký"),
+      ),
+      body: SingleChildScrollView(
         child: SafeArea(
           child: Form(
             key: _formKey,
@@ -222,7 +235,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       color: Color(0xFF7165D6),
                       borderRadius: BorderRadius.circular(10),
                       child: InkWell(
-                        onTap: _registerUser,
+                        onTap: () => _registerUser(context),
                         child: Padding(
                           padding: EdgeInsets.symmetric(vertical: 15, horizontal: 40),
                           child: Center(

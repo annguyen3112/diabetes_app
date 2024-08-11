@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:diabetes_app/models/lesson.dart';
-import 'package:diabetes_app/database_helper.dart';
+import 'package:diabetes_app/database.dart';
 
 class LessonScreen extends StatefulWidget {
   @override
