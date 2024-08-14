@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'enter_blood_sugar_screen.dart';
 
 class BloodSugarScreen extends StatelessWidget {
   @override
@@ -8,9 +9,9 @@ class BloodSugarScreen extends StatelessWidget {
         title: Text('Đường huyết'),
         actions: [
           IconButton(
-            icon: Icon(Icons.filter_list),
+            icon: Icon(Icons.help_outline),
             onPressed: () {
-              // Implement filter logic here
+              // Handle help icon press
             },
           ),
           IconButton(
@@ -26,52 +27,96 @@ class BloodSugarScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              '12 tháng 12 năm 2023',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            // Title and Options
+            Row(
+              children: [
+                Icon(Icons.monitor_heart_outlined, size: 30, color: Colors.teal),
+                SizedBox(width: 8),
+                Text(
+                  'Gợi ý lịch đo',
+                  style: TextStyle(fontSize: 16, color: Colors.teal),
+                ),
+                Spacer(),
+                Text(
+                  '30 ngày',
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                ),
+                Icon(Icons.filter_alt, size: 20, color: Colors.grey),
+              ],
             ),
-            SizedBox(height: 10),
-            _buildBloodSugarCard('Cao', '260 mg/dL', '12:15, Sau ăn trưa', Colors.red, reason: 'Tôi có ăn chè thái chung với bữa trưa'),
-            SizedBox(height: 20),
-            Text(
-              '10 tháng 12 năm 2023',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            SizedBox(height: 16),
+            // Tab Bar
+            DefaultTabController(
+              length: 2,
+              child: TabBar(
+                labelColor: Colors.teal,
+                unselectedLabelColor: Colors.grey,
+                tabs: [
+                  Tab(text: 'Biểu đồ'),
+                  Tab(text: 'Chi tiết'),
+                ],
+              ),
             ),
-            SizedBox(height: 10),
-            _buildBloodSugarCard('Tốt', '89 mg/dL', '11:20, Trước ăn trưa', Colors.green),
-            SizedBox(height: 20),
-            Text(
-              '10 tháng 12 năm 2023',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            SizedBox(height: 16),
+            // Content Area
+            Expanded(
+              child: ListView(
+                children: [
+                  // Distribution Frequency
+                  _buildCard(
+                    context: context,
+                    title: 'Tần suất phân bố',
+                    content: 'Chưa có dữ liệu chỉ số đường huyết. Vui lòng nhập để theo dõi tình trạng bệnh.',
+                  ),
+                  SizedBox(height: 16),
+                  // Blood Sugar Trend
+                  _buildCard(
+                    context: context,
+                    title: 'Xu hướng đường huyết',
+                    content: 'Chưa có dữ liệu chỉ số đường huyết. Vui lòng nhập để theo dõi tình trạng bệnh.',
+                  ),
+                ],
+              ),
             ),
-            SizedBox(height: 10),
-            _buildBloodSugarCard('Thấp', '68 mg/dL', '11:20, Trước ăn trưa', Colors.orange),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Implement add new blood sugar record logic here
+          // Handle add blood sugar entry
         },
         child: Icon(Icons.add),
+        backgroundColor: Colors.teal,
       ),
     );
   }
 
-  Widget _buildBloodSugarCard(String status, String sugar, String time, Color color, {String? reason}) {
+  Widget _buildCard({required BuildContext context, required String title, required String content}) {
     return Card(
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: color,
-          child: Text(status.substring(0, 1), style: TextStyle(color: Colors.white)),
-        ),
-        title: Text(status),
-        subtitle: Column(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.0),
+      ),
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(sugar),
-            Text(time),
-            if (reason != null) Text('Lý do: $reason', style: TextStyle(fontStyle: FontStyle.italic)),
+            Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            SizedBox(height: 8),
+            Text(content, style: TextStyle(fontSize: 16, color: Colors.grey)),
+            SizedBox(height: 16),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder:
+                    (context) => EnterBloodSugarScreen()));
+              },
+              icon: Icon(Icons.add),
+              label: Text('Nhập chỉ số'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.teal,
+              ),
+            ),
           ],
         ),
       ),
