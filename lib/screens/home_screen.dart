@@ -1,26 +1,32 @@
 import 'package:flutter/material.dart';
 import 'chatbot_screen.dart';
 import 'lesson_screen.dart';
+import 'blood_sugar_screen.dart';
 
 class HomeScreen extends StatelessWidget {
+  final String userName;
+
+  HomeScreen({required this.userName});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Diabetes Management'),
+        title: Text('Quản lý sức khỏe tiểu đường'),
         actions: [
           IconButton(
             icon: Icon(Icons.notifications),
             onPressed: () {
-              // Xử lý khi nhấn vào biểu tượng thông báo
+              // Handle notifications icon press
             },
-          )
+          ),
         ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            // User Info Header
             Row(
               children: [
                 CircleAvatar(
@@ -32,7 +38,7 @@ class HomeScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Nguyễn Văn An',
+                      userName,
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     Text(
@@ -44,17 +50,18 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
             SizedBox(height: 20),
+            // Grid View
             Expanded(
               child: GridView.count(
                 crossAxisCount: 2,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
                 children: [
-                  _buildCard('Đường huyết', 'Hôm qua', '211.6 mg/dL', Icons.sentiment_very_dissatisfied, Colors.red),
-                  _buildCard('Huyết áp', 'Hôm qua', '140/80 mmHg', Icons.sentiment_dissatisfied, Colors.orange),
-                  _buildCard('Vận động', 'Hôm qua', '1632 kcal', Icons.local_fire_department, Colors.green),
-                  _buildCard('Dinh dưỡng', 'Hôm qua', '1500 kcal', Icons.restaurant, Colors.green),
-                  _buildCard('Cân nặng', '28/07', '68 kg', Icons.fitness_center, Colors.blue),
+                  _buildCard(context, 'Đường huyết', Icons.monitor_heart_outlined, 'BloodSugarScreen'),
+                  _buildCard(context, 'Huyết áp', Icons.favorite_border, ''),
+                  _buildCard(context, 'Dinh dưỡng', Icons.restaurant_menu, ''),
+                  _buildCard(context, 'Vận động', Icons.directions_run, ''),
+                  _buildCard(context, 'Cân nặng', Icons.fitness_center, ''),
                 ],
               ),
             ),
@@ -67,9 +74,9 @@ class HomeScreen extends StatelessWidget {
           BottomNavigationBarItem(icon: Icon(Icons.article), label: 'Bài học'),
           BottomNavigationBarItem(icon: Icon(Icons.add_circle), label: ''),
           BottomNavigationBarItem(icon: Icon(Icons.question_answer), label: 'Hỏi đáp'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Cá nhân'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Cài đặt'),
         ],
-        selectedItemColor: Colors.blue,
+        selectedItemColor: Colors.teal,
         unselectedItemColor: Colors.grey,
         currentIndex: 0,
         onTap: (index) {
@@ -90,26 +97,31 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCard(String title, String subtitle, String value, IconData icon, Color color) {
-    return Card(
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(title, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            SizedBox(height: 8),
-            Text(subtitle, style: TextStyle(fontSize: 14, color: Colors.grey)),
-            Spacer(),
-            Row(
-              children: [
-                Icon(icon, color: color),
-                SizedBox(width: 8),
-                Expanded(child: Text(value, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: color))),
-              ],
-            ),
-          ],
+  Widget _buildCard(BuildContext context, String title, IconData icon, String screen) {
+    return InkWell(
+      onTap: () {
+        if (screen == 'BloodSugarScreen') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => BloodSugarScreen()),
+          );
+        }
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+        elevation: 2,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(icon, size: 40, color: Colors.teal),
+              Spacer(),
+              Text(title, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            ],
+          ),
         ),
       ),
     );
