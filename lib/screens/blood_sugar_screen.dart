@@ -83,7 +83,8 @@ class BloodSugarScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Handle add blood sugar entry
+          Navigator.push(context, MaterialPageRoute(builder:
+              (context) => EnterBloodSugarScreen()));
         },
         child: Icon(Icons.add),
         backgroundColor: Colors.teal,
