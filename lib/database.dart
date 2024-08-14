@@ -50,7 +50,8 @@ class DatabaseHelper {
         user_id INTEGER,
         level REAL,
         date TEXT,
-        time TEXT
+        time TEXT,
+        note TEXT
       )
     ''');
 
