@@ -51,6 +51,7 @@ class DatabaseHelper {
         level REAL,
         date TEXT,
         time TEXT,
+        moment TEXT,
         note TEXT
       )
     ''');
