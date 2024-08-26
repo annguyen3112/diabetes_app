@@ -5,8 +5,9 @@ import 'blood_sugar_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   final String userName;
+  final int userId;
 
-  HomeScreen({required this.userName});
+  HomeScreen({required this.userName, required this.userId});
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +104,7 @@ class HomeScreen extends StatelessWidget {
         if (screen == 'BloodSugarScreen') {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => BloodSugarScreen()),
+            MaterialPageRoute(builder: (context) => BloodSugarScreen(userId: userId)), // Pass the userId here
           );
         }
       },
