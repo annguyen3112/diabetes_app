@@ -121,7 +121,7 @@ class DatabaseHelper {
       )
     ''');
 
-    // Chèn dữ liệu mẫu vào bảng lessons
+    // Insert sample data into lessons table
     await db.insert('lessons', {
       'title': 'Giới thiệu chương trình cho người tiểu đường',
       'category': 'Bệnh lý',
@@ -170,13 +170,13 @@ class DatabaseHelper {
     }
   }
 
-  // Thêm người dùng vào bảng users
+  // Add a user to the users table
   Future<int> insertUser(Map<String, dynamic> user) async {
     final db = await database;
     return await db.insert('users', user);
   }
 
-  // Lấy danh sách bài học từ bảng lessons
+  // Fetch the list of lessons from the lessons table
   Future<List<Lesson>> getLessons() async {
     final db = await database;
     final res = await db.query('lessons');
@@ -198,4 +198,29 @@ class DatabaseHelper {
       return null;
     }
   }
+
+  // Insert blood sugar data into the blood_sugar table
+  Future<int> insertBloodSugar(Map<String, dynamic> bloodSugar) async {
+    final db = await database;
+    return await db.insert('blood_sugar', bloodSugar);
+  }
+
+  // Fetch the latest blood sugar entry for a user
+  Future<Map<String, dynamic>?> getLatestBloodSugar(int userId) async {
+    final db = await database;
+    final result = await db.query(
+      'blood_sugar',
+      where: 'user_id = ?',
+      whereArgs: [userId],
+      orderBy: 'date DESC, time DESC', // Ensures the latest date and time are first
+      limit: 1,
+    );
+
+    if (result.isNotEmpty) {
+      return result.first;
+    } else {
+      return null;
+    }
+  }
+
 }
