@@ -1,6 +1,11 @@
+import 'package:diabetes_app/database.dart';
 import 'package:flutter/material.dart';
 
 class EnterBloodSugarScreen extends StatefulWidget {
+  final int userId;
+
+  EnterBloodSugarScreen({required this.userId});
+
   @override
   _EnterBloodSugarScreenState createState() => _EnterBloodSugarScreenState();
 }
@@ -11,6 +16,7 @@ class _EnterBloodSugarScreenState extends State<EnterBloodSugarScreen> {
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _selectedTime = TimeOfDay.now();
   String _selectedMeal = 'Trước ăn trưa';
+  String _note = ''; // Biến để lưu ghi chú
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -39,55 +45,67 @@ class _EnterBloodSugarScreenState extends State<EnterBloodSugarScreen> {
   Future<void> _selectMeal(BuildContext context) async {
     final String? picked = await showModalBottomSheet<String>(
       context: context,
+      isScrollControlled: true,
       builder: (BuildContext context) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            ListTile(
-              title: Text('Thức giấc'),
-              onTap: () => Navigator.pop(context, 'Thức giấc'),
-            ),
-            ListTile(
-              title: Text('Trước ăn sáng'),
-              onTap: () => Navigator.pop(context, 'Trước ăn sáng'),
-            ),
-            ListTile(
-              title: Text('Sau ăn sáng'),
-              onTap: () => Navigator.pop(context, 'Sau ăn sáng'),
-            ),
-            ListTile(
-              title: Text('Trước ăn trưa'),
-              onTap: () => Navigator.pop(context, 'Trước ăn trưa'),
-            ),
-            ListTile(
-              title: Text('Sau ăn trưa'),
-              onTap: () => Navigator.pop(context, 'Sau ăn trưa'),
-            ),
-            ListTile(
-              title: Text('Trước ăn tối'),
-              onTap: () => Navigator.pop(context, 'Trước ăn tối'),
-            ),
-            ListTile(
-              title: Text('Sau ăn tối'),
-              onTap: () => Navigator.pop(context, 'Sau ăn tối'),
-            ),
-            ListTile(
-              title: Text('Trước tập thể dục'),
-              onTap: () => Navigator.pop(context, 'Trước tập thể dục'),
-            ),
-            ListTile(
-              title: Text('Sau tập thể dục'),
-              onTap: () => Navigator.pop(context, 'Sau tập thể dục'),
-            ),
-            ListTile(
-              title: Text('Giờ đi ngủ'),
-              onTap: () => Navigator.pop(context, 'Giờ đi ngủ'),
-            ),
-            ListTile(
-              title: Text('Nửa đêm'),
-              onTap: () => Navigator.pop(context, 'Nửa đêm'),
-            ),
-          ],
+        return DraggableScrollableSheet(
+          expand: false,
+          builder: (context, scrollController) {
+            return SingleChildScrollView(
+              controller: scrollController,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    ListTile(
+                      title: Text('Thức giấc'),
+                      onTap: () => Navigator.pop(context, 'Thức giấc'),
+                    ),
+                    ListTile(
+                      title: Text('Trước ăn sáng'),
+                      onTap: () => Navigator.pop(context, 'Trước ăn sáng'),
+                    ),
+                    ListTile(
+                      title: Text('Sau ăn sáng'),
+                      onTap: () => Navigator.pop(context, 'Sau ăn sáng'),
+                    ),
+                    ListTile(
+                      title: Text('Trước ăn trưa'),
+                      onTap: () => Navigator.pop(context, 'Trước ăn trưa'),
+                    ),
+                    ListTile(
+                      title: Text('Sau ăn trưa'),
+                      onTap: () => Navigator.pop(context, 'Sau ăn trưa'),
+                    ),
+                    ListTile(
+                      title: Text('Trước ăn tối'),
+                      onTap: () => Navigator.pop(context, 'Trước ăn tối'),
+                    ),
+                    ListTile(
+                      title: Text('Sau ăn tối'),
+                      onTap: () => Navigator.pop(context, 'Sau ăn tối'),
+                    ),
+                    ListTile(
+                      title: Text('Trước tập thể dục'),
+                      onTap: () => Navigator.pop(context, 'Trước tập thể dục'),
+                    ),
+                    ListTile(
+                      title: Text('Sau tập thể dục'),
+                      onTap: () => Navigator.pop(context, 'Sau tập thể dục'),
+                    ),
+                    ListTile(
+                      title: Text('Giờ đi ngủ'),
+                      onTap: () => Navigator.pop(context, 'Giờ đi ngủ'),
+                    ),
+                    ListTile(
+                      title: Text('Nửa đêm'),
+                      onTap: () => Navigator.pop(context, 'Nửa đêm'),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
         );
       },
     );
@@ -97,13 +115,31 @@ class _EnterBloodSugarScreenState extends State<EnterBloodSugarScreen> {
       });
   }
 
+  Future<void> _saveBloodSugarData() async {
+    final dbHelper = DatabaseHelper.instance;
+
+    Map<String, dynamic> bloodSugarData = {
+      'user_id': widget.userId,
+      'level': _bloodSugar,
+      'date': '${_selectedDate.year}-${_selectedDate.month}-${_selectedDate.day}',
+      'time': '${_selectedTime.hour}:${_selectedTime.minute}',
+      'moment': _selectedMeal,
+      'note': _note,
+    };
+
+    await dbHelper.insertBloodSugar(bloodSugarData);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Dữ liệu đường huyết đã được lưu.')),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Nhập chỉ số đường huyết'),
       ),
-      resizeToAvoidBottomInset: false,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -208,6 +244,11 @@ class _EnterBloodSugarScreenState extends State<EnterBloodSugarScreen> {
                         border: OutlineInputBorder(),
                       ),
                       maxLines: 3,
+                      onChanged: (value) {
+                        setState(() {
+                          _note = value;
+                        });
+                      },
                     ),
                     SizedBox(height: 16),
                     Card(
@@ -259,13 +300,8 @@ class _EnterBloodSugarScreenState extends State<EnterBloodSugarScreen> {
               ),
             ),
             ElevatedButton(
-              onPressed: () {
-                // Handle save action
-              },
+              onPressed: _saveBloodSugarData,
               child: Text('Lưu'),
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50),
-              ),
             ),
           ],
         ),
@@ -274,63 +310,61 @@ class _EnterBloodSugarScreenState extends State<EnterBloodSugarScreen> {
   }
 
   Widget _buildBloodSugarLabel() {
-    String statusText;
-    Color statusColor;
+    String prefix = 'Mức đường huyết ';
+    TextStyle labelStyle;
 
-    if (_bloodSugar < 56) {
-      statusText = 'rất thấp';
-      statusColor = Colors.orange;
+    String labelText;
+    if (_bloodSugar <= 55) {
+      labelText = 'rất thấp';
+      labelStyle = TextStyle(color: Colors.orange, fontSize: 24);
     } else if (_bloodSugar >= 56 && _bloodSugar <= 70) {
-      statusText = 'thấp';
-      statusColor = Colors.yellow;
+      labelText = 'thấp';
+      labelStyle = TextStyle(color: Colors.yellow[700], fontSize: 24);
     } else if (_bloodSugar >= 71 && _bloodSugar <= 130) {
-      statusText = 'tốt';
-      statusColor = Colors.green;
+      labelText = 'bình thường';
+      labelStyle = TextStyle(color: Colors.green, fontSize: 24);
     } else if (_bloodSugar >= 131 && _bloodSugar <= 250) {
-      statusText = 'cao';
-      statusColor = Colors.red;
+      labelText = 'cao';
+      labelStyle = TextStyle(color: Colors.red, fontSize: 24);
     } else {
-      statusText = 'rất cao';
-      statusColor = Colors.red[900]!;
+      labelText = 'rất cao';
+      labelStyle = TextStyle(color: Colors.red[900], fontSize: 24);
     }
 
     return RichText(
       text: TextSpan(
+        text: prefix,
+        style: TextStyle(color: Colors.black, fontSize: 24), // Uncolored prefix
         children: [
-          TextSpan(
-            text: 'Mức đường huyết của bạn ',
-            style: TextStyle(fontSize: 20, color: Colors.black),
-          ),
-          TextSpan(
-            text: statusText,
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: statusColor),
-          ),
+          TextSpan(text: labelText, style: labelStyle), // Colored label
         ],
       ),
     );
   }
 
-  Widget _buildBloodSugarLevelBar() {
-    Color barColor;
-    if (_bloodSugar < 56) {
-      barColor = Colors.orange;
-    } else if (_bloodSugar >= 56 && _bloodSugar <= 70) {
-      barColor = Colors.yellow;
-    } else if (_bloodSugar >= 71 && _bloodSugar <= 130) {
-      barColor = Colors.green;
-    } else if (_bloodSugar >= 131 && _bloodSugar <= 250) {
-      barColor = Colors.red;
-    } else {
-      barColor = Colors.red[900]!;
-    }
 
-    return Container(
-      height: 10,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: barColor,
-        borderRadius: BorderRadius.circular(8.0),
-      ),
+  Color _getBloodSugarLevelColor() {
+    if (_bloodSugar <= 55) {
+      return Colors.orange;
+    } else if (_bloodSugar >= 56 && _bloodSugar <= 70) {
+      return Colors.yellow;
+    } else if (_bloodSugar >= 71 && _bloodSugar <= 130) {
+      return Colors.green;
+    } else if (_bloodSugar >= 131 && _bloodSugar <= 250) {
+      return Colors.red;
+    } else if (_bloodSugar >= 251) {
+      return Colors.red[900]!;
+    } else {
+      return Colors.grey;
+    }
+  }
+
+  Widget _buildBloodSugarLevelBar() {
+    return LinearProgressIndicator(
+      value: _bloodSugar / 300,
+      color: _getBloodSugarLevelColor(),
+      backgroundColor: Colors.grey[300],
+      minHeight: 8,
     );
   }
 }
