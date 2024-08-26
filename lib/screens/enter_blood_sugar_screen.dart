@@ -132,7 +132,10 @@ class _EnterBloodSugarScreenState extends State<EnterBloodSugarScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Dữ liệu đường huyết đã được lưu.')),
     );
+
+    Navigator.of(context).pop(bloodSugarData);
   }
+
 
   @override
   Widget build(BuildContext context) {
