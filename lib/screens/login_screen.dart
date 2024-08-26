@@ -24,7 +24,12 @@ class _LoginScreenState extends State<LoginScreen> {
     if (user != null) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen(userName: user['name'])),
+        MaterialPageRoute(
+          builder: (context) => HomeScreen(
+            userName: user['name'],
+            userId: user['id'],
+          ),
+        ),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -81,7 +86,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           passToggle = !passToggle;
                         });
                       },
-                      child: Icon(passToggle ? CupertinoIcons.eye_slash_fill : CupertinoIcons.eye_fill),
+                      child: Icon(
+                        passToggle
+                            ? CupertinoIcons.eye_slash_fill
+                            : CupertinoIcons.eye_fill,
+                      ),
                     ),
                   ),
                 ),
@@ -97,7 +106,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: InkWell(
                       onTap: _loginUser,
                       child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 15, horizontal: 40),
+                        padding:
+                        EdgeInsets.symmetric(vertical: 15, horizontal: 40),
                         child: Center(
                           child: Text(
                             "Đăng nhập",
@@ -127,8 +137,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder:
-                          (context) => SignupScreen()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SignupScreen()));
                     },
                     child: Text(
                       "Tạo tài khoản",
