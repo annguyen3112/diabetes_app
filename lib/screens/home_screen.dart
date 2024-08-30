@@ -73,7 +73,6 @@ class HomeScreen extends StatelessWidget {
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Trang chủ'),
           BottomNavigationBarItem(icon: Icon(Icons.article), label: 'Bài học'),
-          BottomNavigationBarItem(icon: Icon(Icons.add_circle), label: ''),
           BottomNavigationBarItem(icon: Icon(Icons.question_answer), label: 'Hỏi đáp'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Cài đặt'),
         ],
@@ -81,7 +80,7 @@ class HomeScreen extends StatelessWidget {
         unselectedItemColor: Colors.grey,
         currentIndex: 0,
         onTap: (index) {
-          if (index == 3) {
+          if (index == 2) {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => ChatbotScreen()),
@@ -93,6 +92,12 @@ class HomeScreen extends StatelessWidget {
               MaterialPageRoute(builder: (context) => LessonScreen()),
             );
           }
+          // if (index == 3) {
+          //   Navigator.push(
+          //     context,
+          //     MaterialPageRoute(builder: (context) => SettingsScreen()),
+          //   );
+          // }
         },
       ),
     );
