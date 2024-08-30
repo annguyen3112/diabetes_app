@@ -223,4 +223,79 @@ class DatabaseHelper {
     }
   }
 
+  // Fetch the minimum blood sugar level for a user
+  Future<double?> getMinBloodSugar(int userId) async {
+    final db = await database;
+    final result = await db.rawQuery(
+      'SELECT MIN(level) AS min_level FROM blood_sugar WHERE user_id = ?',
+      [userId],
+    );
+    return result.isNotEmpty ? result.first['min_level'] as double? : null;
+  }
+
+  // Fetch the average blood sugar level for a user
+  Future<double?> getAverageBloodSugar(int userId) async {
+    final db = await database;
+    final result = await db.rawQuery(
+      'SELECT AVG(level) AS avg_level FROM blood_sugar WHERE user_id = ?',
+      [userId],
+    );
+    return result.isNotEmpty ? result.first['avg_level'] as double? : null;
+  }
+
+  // Fetch the maximum blood sugar level for a user
+  Future<double?> getMaxBloodSugar(int userId) async {
+    final db = await database;
+    final result = await db.rawQuery(
+      'SELECT MAX(level) AS max_level FROM blood_sugar WHERE user_id = ?',
+      [userId],
+    );
+    return result.isNotEmpty ? result.first['max_level'] as double? : null;
+  }
+
+  // Fetch all blood sugar data for the distribution chart
+  Future<List<Map<String, dynamic>>> getBloodSugarData(int userId) async {
+    final db = await database;
+    var result = await db.query(
+      'blood_sugar',
+      columns: ['level'],
+      where: 'user_id = ?',
+      whereArgs: [userId],
+      orderBy: 'date DESC, time DESC',
+    );
+    return result;
+  }
+
+  Future<Map<String, int>> getBloodSugarFrequencies(int userId) async {
+    final db = await database;
+
+    // Define the ranges for the different categories
+    final ranges = {
+      'Rất thấp': [0, 55],
+      'Thấp': [56, 70],
+      'Tốt': [71, 130],
+      'Cao': [131, 250],
+      'Rất cao': [251, double.infinity],
+    };
+
+    // Create a map to store the frequencies
+    final Map<String, int> frequencies = {
+      'Rất thấp': 0,
+      'Thấp': 0,
+      'Tốt': 0,
+      'Cao': 0,
+      'Rất cao': 0,
+    };
+
+    // Query the database and count the occurrences for each range
+    for (var range in ranges.entries) {
+      final count = Sqflite.firstIntValue(await db.rawQuery(
+        'SELECT COUNT(*) FROM blood_sugar WHERE user_id = ? AND level BETWEEN ? AND ?',
+        [userId, range.value[0], range.value[1]],
+      )) ?? 0;
+      frequencies[range.key] = count;
+    }
+
+    return frequencies;
+  }
 }
