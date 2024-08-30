@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:diabetes_app/models/lesson.dart';
 import 'package:diabetes_app/database.dart';
 
+import 'chatbot_screen.dart';
+
 class LessonScreen extends StatefulWidget {
   @override
   _LessonScreenState createState() => _LessonScreenState();
@@ -65,6 +67,37 @@ class _LessonScreenState extends State<LessonScreen> {
             ),
           ),
         ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Trang chủ'),
+          BottomNavigationBarItem(icon: Icon(Icons.article), label: 'Bài học'),
+          BottomNavigationBarItem(icon: Icon(Icons.question_answer), label: 'Hỏi đáp'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Cá nhân'),
+        ],
+        selectedItemColor: Colors.blue,
+        unselectedItemColor: Colors.grey,
+        currentIndex: 1,
+        onTap: (index) {
+          if (index == 2) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ChatbotScreen()),
+            );
+          }
+          // if (index == 0) {
+          //   Navigator.push(
+          //     context,
+          //     MaterialPageRoute(builder: (context) => ()),
+          //   );
+          // }
+          // if (index == 3) {
+          //   Navigator.push(
+          //     context,
+          //     MaterialPageRoute(builder: (context) => ()),
+          //   );
+          // }
+        },
       ),
     );
   }
