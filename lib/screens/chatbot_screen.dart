@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'lesson_screen.dart';
+
 class ChatbotScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -79,12 +81,32 @@ class ChatbotScreen extends StatelessWidget {
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Trang chủ'),
           BottomNavigationBarItem(icon: Icon(Icons.article), label: 'Bài học'),
-          BottomNavigationBarItem(icon: Icon(Icons.add_circle), label: ''),
           BottomNavigationBarItem(icon: Icon(Icons.question_answer), label: 'Hỏi đáp'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Cá nhân'),
         ],
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
+        currentIndex: 2,
+        onTap: (index) {
+          // if (index == 0) {
+          //   Navigator.push(
+          //     context,
+          //     MaterialPageRoute(builder: (context) => ChatbotScreen()),
+          //   );
+          // }
+          if (index == 1) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => LessonScreen()),
+            );
+          }
+          // if (index == 3) {
+          //   Navigator.push(
+          //     context,
+          //     MaterialPageRoute(builder: (context) => SettingsScreen()),
+          //   );
+          // }
+        },
       ),
     );
   }
