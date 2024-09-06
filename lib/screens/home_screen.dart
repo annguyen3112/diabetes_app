@@ -1,3 +1,4 @@
+import 'package:diabetes_app/screens/blood_pressure_screen.dart';
 import 'package:flutter/material.dart';
 import 'chatbot_screen.dart';
 import 'lesson_screen.dart';
@@ -59,7 +60,7 @@ class HomeScreen extends StatelessWidget {
                 mainAxisSpacing: 10,
                 children: [
                   _buildCard(context, 'Đường huyết', Icons.monitor_heart_outlined, 'BloodSugarScreen'),
-                  _buildCard(context, 'Huyết áp', Icons.favorite_border, ''),
+                  _buildCard(context, 'Huyết áp', Icons.favorite_border, 'BloodPressureScreen'),
                   _buildCard(context, 'Dinh dưỡng', Icons.restaurant_menu, ''),
                   _buildCard(context, 'Vận động', Icons.directions_run, ''),
                   _buildCard(context, 'Cân nặng', Icons.fitness_center, ''),
@@ -109,7 +110,12 @@ class HomeScreen extends StatelessWidget {
         if (screen == 'BloodSugarScreen') {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => BloodSugarScreen(userId: userId)), // Pass the userId here
+            MaterialPageRoute(builder: (context) => BloodSugarScreen(userId: userId)),
+          );
+        } if (screen == 'BloodPressureScreen') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => BloodPressureScreen(userId: userId)),
           );
         }
       },
@@ -132,4 +138,5 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
+
 }
