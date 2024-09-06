@@ -16,7 +16,7 @@ class _EnterBloodSugarScreenState extends State<EnterBloodSugarScreen> {
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _selectedTime = TimeOfDay.now();
   String _selectedMeal = 'Trước ăn trưa';
-  String _note = ''; // Biến để lưu ghi chú
+  String _note = '';
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -337,9 +337,9 @@ class _EnterBloodSugarScreenState extends State<EnterBloodSugarScreen> {
     return RichText(
       text: TextSpan(
         text: prefix,
-        style: TextStyle(color: Colors.black, fontSize: 24), // Uncolored prefix
+        style: TextStyle(color: Colors.black, fontSize: 24),
         children: [
-          TextSpan(text: labelText, style: labelStyle), // Colored label
+          TextSpan(text: labelText, style: labelStyle),
         ],
       ),
     );
