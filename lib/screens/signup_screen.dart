@@ -59,6 +59,7 @@ class _SignupScreenState extends State<SignupScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Đăng ký thành công!"),
+          backgroundColor: Colors.green,
           duration: Duration(seconds: 2),
         ),
       );
