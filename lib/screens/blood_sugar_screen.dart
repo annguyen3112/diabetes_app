@@ -365,7 +365,7 @@ class _BloodSugarScreenState extends State<BloodSugarScreen> {
           )
               : Center(
             child: Text(
-              'Chưa có dữ liệu đủ để hiển thị biểu đồ.',
+              'Chưa có đủ dữ liệu để hiển thị biểu đồ.',
               style: TextStyle(fontSize: 16, color: Colors.teal),
             ),
           ),
