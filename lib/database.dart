@@ -28,7 +28,6 @@ class DatabaseHelper {
       path,
       version: 1,
       onCreate: _onCreate,
-      //onUpgrade: _onUpgrade,
     );
   }
 
@@ -65,6 +64,7 @@ class DatabaseHelper {
         pulse INTEGER,
         date TEXT,
         time TEXT,
+        moment TEXT,
         note TEXT
       )
     ''');
@@ -297,5 +297,11 @@ class DatabaseHelper {
     }
 
     return frequencies;
+  }
+
+  // Insert blood pressure data into the blood_pressure table
+  Future<int> insertBloodPressure(Map<String, dynamic> bloodPressure) async {
+    final db = await database;
+    return await db.insert('blood_pressure', bloodPressure);
   }
 }
