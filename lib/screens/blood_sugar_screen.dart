@@ -1,6 +1,7 @@
 import 'package:diabetes_app/database.dart';
 import 'package:flutter/material.dart';
 import 'enter_blood_sugar_screen.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 class BloodSugarScreen extends StatefulWidget {
   final int userId;
@@ -13,23 +14,47 @@ class BloodSugarScreen extends StatefulWidget {
 
 class _BloodSugarScreenState extends State<BloodSugarScreen> {
   Map<String, dynamic>? _latestBloodSugarData;
+  double? _minLevel;
+  double? _averageLevel;
+  double? _maxLevel;
+  List<FlSpot> _bloodSugarSpots = [];
 
   @override
   void initState() {
     super.initState();
-    _fetchLatestBloodSugar();
+    _fetchBloodSugarData();
+    _fetchBloodSugarTrendData();
   }
 
-  Future<void> _fetchLatestBloodSugar() async {
-    final latestData = await _getLatestBloodSugar(widget.userId);
+  Future<void> _fetchBloodSugarData() async {
+    final dbHelper = DatabaseHelper.instance;
+    final latestData = await dbHelper.getLatestBloodSugar(widget.userId);
+    final minLevel = await dbHelper.getMinBloodSugar(widget.userId);
+    final averageLevel = await dbHelper.getAverageBloodSugar(widget.userId);
+    final maxLevel = await dbHelper.getMaxBloodSugar(widget.userId);
+
     setState(() {
       _latestBloodSugarData = latestData;
+      _minLevel = minLevel;
+      _averageLevel = averageLevel;
+      _maxLevel = maxLevel;
     });
   }
 
-  Future<Map<String, dynamic>?> _getLatestBloodSugar(int userId) async {
+  Future<void> _fetchBloodSugarTrendData() async {
     final dbHelper = DatabaseHelper.instance;
-    return await dbHelper.getLatestBloodSugar(userId);
+    final bloodSugarData = await dbHelper.getBloodSugarData(widget.userId);
+
+    List<FlSpot> spots = bloodSugarData.map<FlSpot>((data) {
+      final date = DateTime.parse(data['date']);
+      final dayOfMonth = date.day.toDouble();
+      final level = data['level'] as double;
+      return FlSpot(dayOfMonth, level);
+    }).toList();
+
+    setState(() {
+      _bloodSugarSpots = spots;
+    });
   }
 
   @override
@@ -92,12 +117,11 @@ class _BloodSugarScreenState extends State<BloodSugarScreen> {
             Expanded(
               child: ListView(
                 children: [
-                  // Latest Blood Sugar (Gần nhất)
                   if (_latestBloodSugarData != null)
                     _buildLatestCard(context, _latestBloodSugarData!)
                   else
                     FutureBuilder<Map<String, dynamic>?>(
-                      future: _getLatestBloodSugar(widget.userId),
+                      future: DatabaseHelper.instance.getLatestBloodSugar(widget.userId),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting) {
                           return Center(child: CircularProgressIndicator());
@@ -112,8 +136,9 @@ class _BloodSugarScreenState extends State<BloodSugarScreen> {
                       },
                     ),
                   SizedBox(height: 16),
-                  // Distribution Frequency (Tần suất phân bố)
-                  _buildDistributionCard(context),
+                  _buildMinAvgMaxSection(),
+                  SizedBox(height: 16),
+                  _buildTrendChart(),
                 ],
               ),
             ),
@@ -131,6 +156,7 @@ class _BloodSugarScreenState extends State<BloodSugarScreen> {
           if (result != null) {
             setState(() {
               _latestBloodSugarData = result;
+              _fetchBloodSugarTrendData();
             });
           }
         },
@@ -177,7 +203,7 @@ class _BloodSugarScreenState extends State<BloodSugarScreen> {
   }
 
   Widget _buildLatestCard(BuildContext context, Map<String, dynamic> data) {
-    final double level = data['level'];  // Get the blood sugar level
+    final double level = data['level'];
     String statusText;
     Color textColor;
     Color backgroundColor;
@@ -244,28 +270,108 @@ class _BloodSugarScreenState extends State<BloodSugarScreen> {
     );
   }
 
-  Widget _buildDistributionCard(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.0),
-      ),
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Tần suất phân bố', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            SizedBox(height: 8),
-            // Replace with actual distribution chart
-            Container(
-              height: 150,
-              color: Colors.grey.shade200,
-              child: Center(child: Text('Biểu đồ phân bố')),
-            ),
-          ],
+  Widget _buildMinAvgMaxSection() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        _buildMinAvgMaxCard('Thấp nhất', _minLevel, Colors.orange),
+        _buildMinAvgMaxCard('Trung bình', _averageLevel, Colors.green),
+        _buildMinAvgMaxCard('Cao nhất', _maxLevel, Colors.red),
+      ],
+    );
+  }
+
+  Widget _buildMinAvgMaxCard(String label, double? value, Color color) {
+    return Expanded(
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+        elevation: 2,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                label,
+                style: TextStyle(fontSize: 16, color: color),
+              ),
+              SizedBox(height: 8),
+              Text(
+                value != null ? '${value.toStringAsFixed(1)} mg/dL' : 'N/A',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: color),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
+
+  Widget _buildTrendChart() {
+    return Container(
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.teal.shade50,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Biểu đồ xu hướng',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.teal),
+          ),
+          SizedBox(height: 16),
+          _bloodSugarSpots.isNotEmpty
+              ? SizedBox(
+            height: 250,
+            child: LineChart(
+              LineChartData(
+                gridData: FlGridData(show: true),
+                borderData: FlBorderData(show: true),
+                titlesData: FlTitlesData(
+                  bottomTitles: SideTitles(
+                    showTitles: true,
+                    getTitles: (value) {
+                      final day = value.toInt();
+                      return '$day';
+                    },
+                    reservedSize: 22,
+                    margin: 8,
+                  ),
+                  leftTitles: SideTitles(
+                    showTitles: true,
+                    getTitles: (value) {
+                      return '${value.toInt()}';
+                    },
+                    reservedSize: 28,
+                    margin: 8,
+                  ),
+                ),
+                lineBarsData: [
+                  LineChartBarData(
+                    spots: _bloodSugarSpots,
+                    isCurved: true,
+                    colors: [Colors.teal],
+                    barWidth: 2,
+                    dotData: FlDotData(show: true),
+                    belowBarData: BarAreaData(show: false),
+                  ),
+                ],
+              ),
+            ),
+          )
+              : Center(
+            child: Text(
+              'Chưa có dữ liệu đủ để hiển thị biểu đồ.',
+              style: TextStyle(fontSize: 16, color: Colors.teal),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 }
