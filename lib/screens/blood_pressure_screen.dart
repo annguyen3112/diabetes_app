@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -322,13 +323,17 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildBloodPressureInput(),
-              SizedBox(height: 20),
+              SizedBox(height: 16),
               _buildHeartRateInput(),
-              SizedBox(height: 20),
+              SizedBox(height: 16),
               _buildDateTimeInput(),
-              SizedBox(height: 20),
+              SizedBox(height: 16),
+              _buildMealInput(),
+              SizedBox(height: 16),
               _buildNoteInput(),
-              SizedBox(height: 20),
+              SizedBox(height: 16),
+              _buildNote(),
+              SizedBox(height: 16),
               _buildSaveButton(),
             ],
           ),
@@ -346,8 +351,14 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Tâm thu / Tâm trương',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Row(
+              children: [
+                Icon(Icons.monitor_heart_outlined),
+                SizedBox(width: 5),
+                Text('Tâm thu / Tâm trương',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              ],
+            ),
             SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -400,8 +411,14 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Nhịp tim',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Row(
+              children: [
+                Icon(Icons.favorite_outline_rounded),
+                SizedBox(width: 5),
+                Text('Nhịp tim',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              ],
+            ),
             SizedBox(height: 10),
             TextField(
               controller: heartRateController,
@@ -434,6 +451,7 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
             decoration: InputDecoration(
               icon: Icon(Icons.calendar_today),
               labelText: 'Chọn ngày',
+              labelStyle: TextStyle(fontWeight: FontWeight.bold),
             ),
             readOnly: true,
             onTap: () async {
@@ -441,7 +459,7 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
                 context: context,
                 initialDate: DateTime.now(),
                 firstDate: DateTime(2000),
-                lastDate: DateTime(2101),
+                lastDate: DateTime.now(),
               );
               if (pickedDate != null) {
                 setState(() {
@@ -459,6 +477,7 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
             decoration: InputDecoration(
               icon: Icon(Icons.access_time),
               labelText: 'Chọn giờ',
+              labelStyle: TextStyle(fontWeight: FontWeight.bold),
             ),
             readOnly: true,
             onTap: () async {
@@ -479,6 +498,46 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
     );
   }
 
+  Widget _buildMealInput() {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      elevation: 4,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.timer_outlined),
+                SizedBox(width: 5),
+                Text('Thời điểm đo', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              ],
+            ),
+            SizedBox(height: 10),
+            GestureDetector(
+              onTap: () => _selectMeal(context),
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(_selectedMeal, style: TextStyle(fontSize: 16)),
+                    Icon(Icons.arrow_drop_down),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildNoteInput() {
     return TextField(
       controller: noteController,
@@ -492,17 +551,73 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
     );
   }
 
+  Widget _buildNote() {
+    return Card(
+      color: Colors.yellow[100],
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          children: [
+            Icon(Icons.warning, color: Colors.orange),
+            SizedBox(width: 8),
+            Expanded(
+              child: RichText(
+                text: TextSpan(
+                  style: TextStyle(fontSize: 16, color: Colors.black),
+                  children: [
+                    TextSpan(
+                      text: 'Các ngưỡng huyết áp (mmHg): ',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    TextSpan(
+                      text: '\n- Huyết áp thấp: Tâm thu < 90; Tâm trương < 60.\n'
+                          '- Bình thường: Tâm thu 90 - 130; Tâm trương 60 - 85.\n'
+                          '- Bình thường cao: Tâm thu 130 - 140; Tâm trương 85 - 90.\n'
+                          '- Tăng huyết áp độ 1: Tâm thu 140 - 160; Tâm trương 90 - 100.\n'
+                          '- Tăng huyết áp độ 2: Tâm thu 160 - 180; Tâm trương 100 - 110.\n'
+                          '- Tăng huyết áp độ 3: Tâm thu > 180; Tâm trương > 110.\n\n',
+                    ),
+                    TextSpan(
+                      text: 'Nhịp tim:',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    TextSpan(
+                      text: '\n Theo Hiệp hội Tim mạch Hoa Kỳ, nhịp tim bình thường của người'
+                          'trưởng thành là khoảng 60 - 100 bpm lúc nghỉ ngơi. Tuy nhiên khi ngủ,'
+                          ' nhịp tim có xu hướng chậm đi (40 - 50 bpm). \n\n',
+                    ),
+                    TextSpan(
+                      text: 'Nhịp tim cao: ',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    TextSpan(
+                      text: '> 100 nhịp/phút ở người trường thành. \n\n',
+                    ),
+                    TextSpan(
+                      text: 'Nhịp tim thấp: ',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    TextSpan(
+                      text: '< 60 nhịp/phút ở người trường thành.',
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildSaveButton() {
     return Center(
       child: ElevatedButton(
         onPressed: () {
-          // Implement save logic here
-          // You can also check 'isDifferenceUnsafe' before saving
-          if (isDifferenceUnsafe) {
-            // Optionally, prevent saving or prompt the user
+          if (isDifferenceUnsafe && noteController.text.isEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text(
-                  'Chỉ số huyết áp không an toàn. Vui lòng kiểm tra lại.'),
+                  'Chỉ số huyết áp không an toàn. Vui lòng cho biết lí do.'),
               backgroundColor: Colors.red,
             ));
             return;
