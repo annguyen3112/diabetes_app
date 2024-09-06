@@ -22,6 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final user = await DatabaseHelper.instance.getUserByPhoneAndPassword(phone, password);
 
     if (user != null) {
+      _showSuccessSnackBar('Đăng nhập thành công!');
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -32,13 +33,27 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Số điện thoại hoặc mật khẩu không đúng"),
-          duration: Duration(seconds: 2),
-        ),
-      );
+      _showErrorSnackBar('Số điện thoại hoặc mật khẩu không đúng');
     }
+  }
+
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _showSuccessSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(seconds: 2),
+        backgroundColor: Colors.green, // Màu nền của thông báo thành công
+      ),
+    );
   }
 
   @override
