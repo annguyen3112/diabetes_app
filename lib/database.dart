@@ -212,7 +212,7 @@ class DatabaseHelper {
       'blood_sugar',
       where: 'user_id = ?',
       whereArgs: [userId],
-      orderBy: 'date DESC, time DESC', // Ensures the latest date and time are first
+      orderBy: 'date DESC, time DESC',
       limit: 1,
     );
 
@@ -304,4 +304,117 @@ class DatabaseHelper {
     final db = await database;
     return await db.insert('blood_pressure', bloodPressure);
   }
+
+  // Fetch all blood pressure data for a user
+  Future<List<Map<String, dynamic>>> getBloodPressureData(int userId) async {
+    final db = await database;
+    var result = await db.query(
+      'blood_pressure',
+      where: 'user_id = ?',
+      whereArgs: [userId],
+      orderBy: 'date DESC, time DESC',
+    );
+    return result;
+  }
+
+  Future<List<Map<String, dynamic>>> getBloodPressureByUserId(int userId) async {
+    final db = await database;
+    return await db.query('blood_pressure', where: 'user_id = ?', whereArgs: [userId], orderBy: 'date DESC');
+  }
+
+  Future<Map<String, dynamic>?> getLatestBloodPressure(int userId) async {
+    Database? db = await instance.database;
+    var result = await db?.query(
+      'blood_pressure',
+      where: 'user_id = ?',
+      whereArgs: [userId],
+      orderBy: 'date DESC, time DESC',
+      limit: 1,
+    );
+
+    if (result != null && result.isNotEmpty) {
+      return result.first;
+    } else {
+      return null;
+    }
+  }
+
+  // Get minimum systolic blood pressure
+  Future<double?> getMinSystolicPressure(int userId) async {
+    Database? db = await instance.database;
+    var result = await db?.rawQuery(
+        'SELECT MIN(systolic) as minSystolic FROM blood_pressure WHERE user_id = ?',
+        [userId]
+    );
+    if (result != null && result.isNotEmpty) {
+      return result.first['minSystolic'] as double?;
+    }
+    return null;
+  }
+
+  // Get average systolic blood pressure
+  Future<double?> getAverageSystolicPressure(int userId) async {
+    Database? db = await instance.database;
+    var result = await db?.rawQuery(
+        'SELECT AVG(systolic) as avgSystolic FROM blood_pressure WHERE user_id = ?',
+        [userId]
+    );
+    if (result != null && result.isNotEmpty) {
+      return result.first['avgSystolic'] as double?;
+    }
+    return null;
+  }
+
+  // Get maximum systolic blood pressure
+  Future<double?> getMaxSystolicPressure(int userId) async {
+    Database? db = await instance.database;
+    var result = await db?.rawQuery(
+        'SELECT MAX(systolic) as maxSystolic FROM blood_pressure WHERE user_id = ?',
+        [userId]
+    );
+    if (result != null && result.isNotEmpty) {
+      return result.first['maxSystolic'] as double?;
+    }
+    return null;
+  }
+
+  // Get minimum diastolic blood pressure
+  Future<double?> getMinDiastolicPressure(int userId) async {
+    Database? db = await instance.database;
+    var result = await db?.rawQuery(
+        'SELECT MIN(diastolic) as minDiastolic FROM blood_pressure WHERE user_id = ?',
+        [userId]
+    );
+    if (result != null && result.isNotEmpty) {
+      return result.first['minDiastolic'] as double?;
+    }
+    return null;
+  }
+
+  // Get average diastolic blood pressure
+  Future<double?> getAverageDiastolicPressure(int userId) async {
+    Database? db = await instance.database;
+    var result = await db?.rawQuery(
+        'SELECT AVG(diastolic) as avgDiastolic FROM blood_pressure WHERE user_id = ?',
+        [userId]
+    );
+    if (result != null && result.isNotEmpty) {
+      return result.first['avgDiastolic'] as double?;
+    }
+    return null;
+  }
+
+  // Get maximum diastolic blood pressure
+  Future<double?> getMaxDiastolicPressure(int userId) async {
+    Database? db = await instance.database;
+    var result = await db?.rawQuery(
+        'SELECT MAX(diastolic) as maxDiastolic FROM blood_pressure WHERE user_id = ?',
+        [userId]
+    );
+    if (result != null && result.isNotEmpty) {
+      return result.first['maxDiastolic'] as double?;
+    }
+    return null;
+  }
+
 }
