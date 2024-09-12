@@ -34,8 +34,9 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
     systolicController.text = '';
     diastolicController.text = '';
     heartRateController.text = '';
-    dateController.text = '31/08/2024';
-    timeController.text = '21:55';
+    DateTime now = DateTime.now();
+    dateController.text = "${now.year}/${now.month}/${now.day}";
+    timeController.text = "${now.hour}:${now.minute}";
     _updatePressureLevel();
   }
 
