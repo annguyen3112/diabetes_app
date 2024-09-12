@@ -1,3 +1,5 @@
+import 'package:diabetes_app/database.dart';
+import 'package:diabetes_app/screens/blood_pressure_result_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -443,58 +445,62 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
 
 
   Widget _buildDateTimeInput() {
-    return Row(
-      children: [
-        Expanded(
-          child: TextField(
-            controller: dateController,
-            decoration: InputDecoration(
-              icon: Icon(Icons.calendar_today),
-              labelText: 'Chọn ngày',
-              labelStyle: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            readOnly: true,
-            onTap: () async {
-              DateTime? pickedDate = await showDatePicker(
-                context: context,
-                initialDate: DateTime.now(),
-                firstDate: DateTime(2000),
-                lastDate: DateTime.now(),
-              );
-              if (pickedDate != null) {
-                setState(() {
-                  dateController.text =
-                  "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
-                });
-              }
-            },
+    return GestureDetector(
+      onTap: () async {
+        DateTime? pickedDate = await showDatePicker(
+          context: context,
+          initialDate: DateTime.now(),
+          firstDate: DateTime(2000),
+          lastDate: DateTime.now(),
+        );
+
+        if (pickedDate != null) {
+          TimeOfDay? pickedTime = await showTimePicker(
+            context: context,
+            initialTime: TimeOfDay.now(),
+          );
+
+          if (pickedTime != null) {
+            setState(() {
+              dateController.text =
+              "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+              timeController.text =
+              "${pickedTime.hour}:${pickedTime.minute}";
+            });
+          }
+        }
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        elevation: 4,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.calendar_today),
+                  SizedBox(width: 5),
+                  Text('Ngày và giờ',
+                      style:
+                      TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                ],
+              ),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "${dateController.text} ${timeController.text}",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
-        SizedBox(width: 10),
-        Expanded(
-          child: TextField(
-            controller: timeController,
-            decoration: InputDecoration(
-              icon: Icon(Icons.access_time),
-              labelText: 'Chọn giờ',
-              labelStyle: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            readOnly: true,
-            onTap: () async {
-              TimeOfDay? pickedTime = await showTimePicker(
-                context: context,
-                initialTime: TimeOfDay.now(),
-              );
-              if (pickedTime != null) {
-                setState(() {
-                  timeController.text =
-                  "${pickedTime.hour}:${pickedTime.minute.toString().padLeft(2, '0')}";
-                });
-              }
-            },
-          ),
-        ),
-      ],
+      ),
     );
   }
 
@@ -539,15 +545,32 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
   }
 
   Widget _buildNoteInput() {
-    return TextField(
-      controller: noteController,
-      decoration: InputDecoration(
-        labelText: 'Ghi chú',
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      elevation: 4,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.sticky_note_2_outlined),
+                SizedBox(width: 5),
+                Text('Ghi chú', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              ],
+            ),
+            SizedBox(height: 8),
+            TextField(
+              controller: noteController,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+              ),
+              maxLines: 3,
+            ),
+          ],
         ),
       ),
-      maxLines: 3,
     );
   }
 
@@ -613,32 +636,55 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
   Widget _buildSaveButton() {
     return Center(
       child: ElevatedButton(
-        onPressed: () {
+        onPressed: () async {
+          // Kiểm tra nếu huyết áp không an toàn và chưa nhập lý do
           if (isDifferenceUnsafe && noteController.text.isEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-                  'Chỉ số huyết áp không an toàn. Vui lòng cho biết lí do.'),
+              content:
+              Text('Chỉ số huyết áp không an toàn. Vui lòng cho biết lí do.'),
               backgroundColor: Colors.red,
             ));
             return;
           }
 
-          // Proceed with saving the data
-          // Example:
-          // saveBloodPressureData(
-          //   userId: widget.userId,
-          //   systolic: systolic,
-          //   diastolic: diastolic,
-          //   heartRate: int.parse(heartRateController.text),
-          //   date: dateController.text,
-          //   time: timeController.text,
-          //   note: noteController.text,
-          // );
+          // Chuyển đổi systolic, diastolic, và heartRate sang số nguyên
+          int systolic = int.tryParse(systolicController.text) ?? 0;
+          int diastolic = int.tryParse(diastolicController.text) ?? 0;
+          int pulse = int.tryParse(heartRateController.text) ?? 0; // Nhịp tim
 
+          // Kiểm tra nếu dữ liệu đầu vào hợp lệ
+          if (systolic == 0 || diastolic == 0 || pulse == 0) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('Vui lòng nhập đầy đủ chỉ số huyết áp và nhịp tim.'),
+              backgroundColor: Colors.red,
+            ));
+            return;
+          }
+
+          // Lưu dữ liệu huyết áp vào SQLite database
+          await DatabaseHelper.instance.insertBloodPressure({
+            'user_id': widget.userId, // ID của người dùng
+            'systolic': systolic, // Chỉ số tâm thu
+            'diastolic': diastolic, // Chỉ số tâm trương
+            'pulse': pulse, // Nhịp tim
+            'date': dateController.text, // Ngày đo
+            'time': timeController.text, // Thời gian đo
+            'moment': _selectedMeal, // Thời điểm đo (ví dụ: Trước ăn trưa)
+            'note': noteController.text, // Ghi chú (nếu có)
+          });
+
+          // Hiển thị thông báo lưu thành công
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text('Dữ liệu huyết áp đã được lưu thành công.'),
             backgroundColor: Colors.green,
           ));
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => BloodPressureResultScreen(userId: widget.userId),
+            ),
+          );
         },
         child: Text('Lưu'),
       ),
