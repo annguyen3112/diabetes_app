@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'ask_screen.dart';  // Import the AskScreen here
 import 'lesson_screen.dart';
 
 class ChatbotScreen extends StatelessWidget {
@@ -30,7 +30,7 @@ class ChatbotScreen extends StatelessWidget {
                   ],
                   isSelected: [true, false],
                   onPressed: (index) {
-                    // Thêm logic chuyển đổi giữa "Của tôi" và "Tất cả"
+                    // Add logic for switching between "Của tôi" and "Tất cả"
                   },
                 ),
               ],
@@ -50,25 +50,33 @@ class ChatbotScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 20),
-            Card(
-              elevation: 2,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  children: [
-                    Image.asset('assets/chatbot_image.png', width: 60),
-                    SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Đặt câu hỏi cho chatbot', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                          SizedBox(height: 8),
-                          Text('Bạn chưa đặt câu hỏi nào, đừng ngại đưa ra những thắc mắc nhé!'),
-                        ],
+            GestureDetector(  // Wrap the Card with GestureDetector to capture the tap
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AskScreen()),  // Navigate to AskScreen
+                );
+              },
+              child: Card(
+                elevation: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    children: [
+                      Image.asset('assets/chatbot_image.png', width: 60),
+                      SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Đặt câu hỏi cho chatbot', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            SizedBox(height: 8),
+                            Text('Bạn chưa đặt câu hỏi nào, đừng ngại đưa ra những thắc mắc nhé!'),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -88,24 +96,12 @@ class ChatbotScreen extends StatelessWidget {
         unselectedItemColor: Colors.grey,
         currentIndex: 2,
         onTap: (index) {
-          // if (index == 0) {
-          //   Navigator.push(
-          //     context,
-          //     MaterialPageRoute(builder: (context) => ChatbotScreen()),
-          //   );
-          // }
           if (index == 1) {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => LessonScreen()),
             );
           }
-          // if (index == 3) {
-          //   Navigator.push(
-          //     context,
-          //     MaterialPageRoute(builder: (context) => SettingsScreen()),
-          //   );
-          // }
         },
       ),
     );
