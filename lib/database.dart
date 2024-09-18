@@ -121,6 +121,18 @@ class DatabaseHelper {
       )
     ''');
 
+    await db.execute('''
+      CREATE TABLE tbl_weight(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        weight REAL,
+        height REAL,
+        date TEXT,
+        time TEXT, 
+        note TEXT
+      )
+    ''');
+
     // Insert sample data into lessons table
     await db.insert('lessons', {
       'title': 'Giới thiệu chương trình cho người tiểu đường',
@@ -155,20 +167,6 @@ class DatabaseHelper {
     });
   }
 
-  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < 2) {
-      await db.execute('''
-        CREATE TABLE users (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          name TEXT,
-          phone TEXT,
-          birthdate TEXT,
-          gender TEXT,
-          password TEXT
-        )
-      ''');
-    }
-  }
 
   // Add a user to the users table
   Future<int> insertUser(Map<String, dynamic> user) async {
@@ -299,13 +297,11 @@ class DatabaseHelper {
     return frequencies;
   }
 
-  // Insert blood pressure data into the blood_pressure table
   Future<int> insertBloodPressure(Map<String, dynamic> bloodPressure) async {
     final db = await database;
     return await db.insert('blood_pressure', bloodPressure);
   }
 
-  // Fetch all blood pressure data for a user
   Future<List<Map<String, dynamic>>> getBloodPressureData(int userId) async {
     final db = await database;
     var result = await db.query(
@@ -323,8 +319,8 @@ class DatabaseHelper {
   }
 
   Future<Map<String, dynamic>?> getLatestBloodPressure(int userId) async {
-    Database? db = await instance.database;
-    var result = await db?.query(
+    final db = await database;
+    var result = await db.query(
       'blood_pressure',
       where: 'user_id = ?',
       whereArgs: [userId],
@@ -332,14 +328,13 @@ class DatabaseHelper {
       limit: 1,
     );
 
-    if (result != null && result.isNotEmpty) {
+    if (result.isNotEmpty) {
       return result.first;
     } else {
       return null;
     }
   }
 
-  // Get minimum systolic blood pressure
   Future<double?> getMinSystolicPressure(int userId) async {
     Database? db = await instance.database;
     var result = await db?.rawQuery(
@@ -352,7 +347,6 @@ class DatabaseHelper {
     return null;
   }
 
-  // Get average systolic blood pressure
   Future<double?> getAverageSystolicPressure(int userId) async {
     Database? db = await instance.database;
     var result = await db?.rawQuery(
@@ -365,7 +359,6 @@ class DatabaseHelper {
     return null;
   }
 
-  // Get maximum systolic blood pressure
   Future<double?> getMaxSystolicPressure(int userId) async {
     Database? db = await instance.database;
     var result = await db?.rawQuery(
@@ -378,7 +371,6 @@ class DatabaseHelper {
     return null;
   }
 
-  // Get minimum diastolic blood pressure
   Future<double?> getMinDiastolicPressure(int userId) async {
     Database? db = await instance.database;
     var result = await db?.rawQuery(
@@ -391,7 +383,6 @@ class DatabaseHelper {
     return null;
   }
 
-  // Get average diastolic blood pressure
   Future<double?> getAverageDiastolicPressure(int userId) async {
     Database? db = await instance.database;
     var result = await db?.rawQuery(
@@ -404,7 +395,6 @@ class DatabaseHelper {
     return null;
   }
 
-  // Get maximum diastolic blood pressure
   Future<double?> getMaxDiastolicPressure(int userId) async {
     Database? db = await instance.database;
     var result = await db?.rawQuery(
@@ -417,4 +407,30 @@ class DatabaseHelper {
     return null;
   }
 
+  Future<Map<String, dynamic>?> getHeartRateData(int userId) async {
+    final db = await database;
+
+    // Truy vấn để lấy dữ liệu nhịp tim (pulse) từ bảng blood_pressure
+    final List<Map<String, dynamic>> result = await db.query(
+      'blood_pressure',
+      columns: [
+        'MIN(pulse) as minHeartRate',
+        'AVG(pulse) as avgHeartRate',
+        'MAX(pulse) as maxHeartRate'
+      ],
+      where: 'user_id = ?',
+      whereArgs: [userId],
+    );
+
+    if (result.isNotEmpty) {
+      return result.first; // Trả về bản ghi đầu tiên
+    } else {
+      return null; // Không có dữ liệu
+    }
+  }
+
+  Future<int> insertWeight(Map<String, dynamic> weight) async {
+    final db = await database;
+    return await db.insert('tbl_weight', weight);
+  }
 }
