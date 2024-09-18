@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'chatbot_screen.dart';
 import 'lesson_screen.dart';
 import 'blood_sugar_screen.dart';
+import 'package:diabetes_app/screens/weight_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   final String userName;
@@ -63,7 +64,7 @@ class HomeScreen extends StatelessWidget {
                   _buildCard(context, 'Huyết áp', Icons.favorite_border, 'BloodPressureScreen'),
                   _buildCard(context, 'Dinh dưỡng', Icons.restaurant_menu, ''),
                   _buildCard(context, 'Vận động', Icons.directions_run, ''),
-                  _buildCard(context, 'Cân nặng', Icons.fitness_center, ''),
+                  _buildCard(context, 'Cân nặng', Icons.fitness_center, 'WeightScreen'),
                 ],
               ),
             ),
@@ -116,6 +117,12 @@ class HomeScreen extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => BloodPressureScreen(userId: userId)),
+          );
+        }
+        if (screen == 'WeightScreen') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => WeightScreen(userId: userId)),
           );
         }
       },
