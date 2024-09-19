@@ -1,4 +1,5 @@
 import 'package:diabetes_app/database.dart';
+import 'package:diabetes_app/screens/weight_screen_result.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -257,6 +258,12 @@ class _WeightScreenState extends State<WeightScreen> {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text('Dữ liệu cân nặng đã được lưu thành công.'),
             backgroundColor: Colors.green,
+          ));
+
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+              builder: (context) => WeightResultScreen(userId: widget.userId),
           ));
         },
         child: Text('Lưu'),
