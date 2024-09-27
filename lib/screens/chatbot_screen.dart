@@ -3,11 +3,13 @@ import 'ask_screen.dart';  // Import the AskScreen here
 import 'lesson_screen.dart';
 
 class ChatbotScreen extends StatelessWidget {
+  const ChatbotScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Hỏi đáp cùng chatbot'),
+        title: const Text('Hỏi đáp cùng chatbot'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -18,26 +20,26 @@ class ChatbotScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ToggleButtons(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Text('Của tôi'),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Text('Tất cả'),
-                    ),
-                  ],
-                  isSelected: [true, false],
+                  isSelected: const [true, false],
                   onPressed: (index) {
                     // Add logic for switching between "Của tôi" and "Tất cả"
                   },
+                  children: const [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Text('Của tôi'),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Text('Tất cả'),
+                    ),
+                  ],
                 ),
               ],
             ),
-            SizedBox(height: 20),
-            Text('Xem theo chủ đề', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            SizedBox(height: 10),
+            const SizedBox(height: 20),
+            const Text('Xem theo chủ đề', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 10),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -49,12 +51,12 @@ class ChatbotScreen extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             GestureDetector(  // Wrap the Card with GestureDetector to capture the tap
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => AskScreen()),  // Navigate to AskScreen
+                  MaterialPageRoute(builder: (context) => const AskScreen()),  // Navigate to AskScreen
                 );
               },
               child: Card(
@@ -64,8 +66,8 @@ class ChatbotScreen extends StatelessWidget {
                   child: Row(
                     children: [
                       Image.asset('assets/chatbot_image.png', width: 60),
-                      SizedBox(width: 16),
-                      Expanded(
+                      const SizedBox(width: 16),
+                      const Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -80,13 +82,13 @@ class ChatbotScreen extends StatelessWidget {
                 ),
               ),
             ),
-            Spacer(),
+            const Spacer(),
             Image.asset('assets/question_image.png'),
           ],
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: [
+        items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Trang chủ'),
           BottomNavigationBarItem(icon: Icon(Icons.article), label: 'Bài học'),
           BottomNavigationBarItem(icon: Icon(Icons.question_answer), label: 'Hỏi đáp'),
@@ -99,7 +101,7 @@ class ChatbotScreen extends StatelessWidget {
           if (index == 1) {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => LessonScreen()),
+              MaterialPageRoute(builder: (context) => const LessonScreen()),
             );
           }
         },
