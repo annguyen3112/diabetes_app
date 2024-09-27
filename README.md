@@ -30,6 +30,18 @@ Educational Content: Learn more about diabetes with provided lessons and tips.
 
 ## Screenshots
 <div align="center">
+  <img src="Demo App/Welcome.png">
+</div>
+<div align="center">
+  <img src="experiments/result2.png">
+</div>
+<div align="center">
+  <img src="experiments/result3.png">
+</div>
+<div align="center">
+  <img src="experiments/result4.png">
+</div>
+<div align="center">
   <img src="experiments/result1.png">
 </div>
 <div align="center">
@@ -41,7 +53,21 @@ Educational Content: Learn more about diabetes with provided lessons and tips.
 <div align="center">
   <img src="experiments/result4.png">
 </div>
-
+<div align="center">
+  <img src="experiments/result1.png">
+</div>
+<div align="center">
+  <img src="experiments/result2.png">
+</div>
+<div align="center">
+  <img src="experiments/result3.png">
+</div>
+<div align="center">
+  <img src="experiments/result4.png">
+</div>
+<div align="center">
+  <img src="experiments/result4.png">
+</div>
 
 ## Future Improvements
 Expand the chatbot's knowledge base for better Q&A responses.
