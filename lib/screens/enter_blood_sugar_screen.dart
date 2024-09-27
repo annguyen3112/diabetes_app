@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class EnterBloodSugarScreen extends StatefulWidget {
   final int userId;
 
-  EnterBloodSugarScreen({required this.userId});
+  const EnterBloodSugarScreen({super.key, required this.userId});
 
   @override
   _EnterBloodSugarScreenState createState() => _EnterBloodSugarScreenState();
@@ -25,10 +25,11 @@ class _EnterBloodSugarScreenState extends State<EnterBloodSugarScreen> {
       firstDate: DateTime(2000),
       lastDate: DateTime.now(),
     );
-    if (picked != null && picked != _selectedDate)
+    if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
       });
+    }
   }
 
   Future<void> _selectTime(BuildContext context) async {
@@ -36,10 +37,11 @@ class _EnterBloodSugarScreenState extends State<EnterBloodSugarScreen> {
       context: context,
       initialTime: _selectedTime,
     );
-    if (picked != null && picked != _selectedTime)
+    if (picked != null && picked != _selectedTime) {
       setState(() {
         _selectedTime = picked;
       });
+    }
   }
 
   Future<void> _selectMeal(BuildContext context) async {
@@ -58,47 +60,47 @@ class _EnterBloodSugarScreenState extends State<EnterBloodSugarScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     ListTile(
-                      title: Text('Thức giấc'),
+                      title: const Text('Thức giấc'),
                       onTap: () => Navigator.pop(context, 'Thức giấc'),
                     ),
                     ListTile(
-                      title: Text('Trước ăn sáng'),
+                      title: const Text('Trước ăn sáng'),
                       onTap: () => Navigator.pop(context, 'Trước ăn sáng'),
                     ),
                     ListTile(
-                      title: Text('Sau ăn sáng'),
+                      title: const Text('Sau ăn sáng'),
                       onTap: () => Navigator.pop(context, 'Sau ăn sáng'),
                     ),
                     ListTile(
-                      title: Text('Trước ăn trưa'),
+                      title: const Text('Trước ăn trưa'),
                       onTap: () => Navigator.pop(context, 'Trước ăn trưa'),
                     ),
                     ListTile(
-                      title: Text('Sau ăn trưa'),
+                      title: const Text('Sau ăn trưa'),
                       onTap: () => Navigator.pop(context, 'Sau ăn trưa'),
                     ),
                     ListTile(
-                      title: Text('Trước ăn tối'),
+                      title: const Text('Trước ăn tối'),
                       onTap: () => Navigator.pop(context, 'Trước ăn tối'),
                     ),
                     ListTile(
-                      title: Text('Sau ăn tối'),
+                      title: const Text('Sau ăn tối'),
                       onTap: () => Navigator.pop(context, 'Sau ăn tối'),
                     ),
                     ListTile(
-                      title: Text('Trước tập thể dục'),
+                      title: const Text('Trước tập thể dục'),
                       onTap: () => Navigator.pop(context, 'Trước tập thể dục'),
                     ),
                     ListTile(
-                      title: Text('Sau tập thể dục'),
+                      title: const Text('Sau tập thể dục'),
                       onTap: () => Navigator.pop(context, 'Sau tập thể dục'),
                     ),
                     ListTile(
-                      title: Text('Giờ đi ngủ'),
+                      title: const Text('Giờ đi ngủ'),
                       onTap: () => Navigator.pop(context, 'Giờ đi ngủ'),
                     ),
                     ListTile(
-                      title: Text('Nửa đêm'),
+                      title: const Text('Nửa đêm'),
                       onTap: () => Navigator.pop(context, 'Nửa đêm'),
                     ),
                   ],
@@ -109,10 +111,11 @@ class _EnterBloodSugarScreenState extends State<EnterBloodSugarScreen> {
         );
       },
     );
-    if (picked != null)
+    if (picked != null) {
       setState(() {
         _selectedMeal = picked;
       });
+    }
   }
 
   Future<void> _saveBloodSugarData() async {
@@ -130,7 +133,7 @@ class _EnterBloodSugarScreenState extends State<EnterBloodSugarScreen> {
     await dbHelper.insertBloodSugar(bloodSugarData);
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Dữ liệu đường huyết đã được lưu.')),
+      const SnackBar(content: Text('Dữ liệu đường huyết đã được lưu.')),
     );
 
     Navigator.of(context).pop(bloodSugarData);
@@ -141,7 +144,7 @@ class _EnterBloodSugarScreenState extends State<EnterBloodSugarScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Nhập chỉ số đường huyết'),
+        title: const Text('Nhập chỉ số đường huyết'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -165,7 +168,7 @@ class _EnterBloodSugarScreenState extends State<EnterBloodSugarScreen> {
                               child: _isEditing
                                   ? TextField(
                                 autofocus: true,
-                                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                keyboardType: const TextInputType.numberWithOptions(decimal: true),
                                 onChanged: (value) {
                                   setState(() {
                                     _bloodSugar = double.tryParse(value) ?? _bloodSugar;
@@ -176,7 +179,7 @@ class _EnterBloodSugarScreenState extends State<EnterBloodSugarScreen> {
                                     _isEditing = false;
                                   });
                                 },
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   suffixText: 'mg/dL',
                                   suffixStyle: TextStyle(
                                     fontSize: 24,
@@ -184,7 +187,7 @@ class _EnterBloodSugarScreenState extends State<EnterBloodSugarScreen> {
                                     color: Colors.blueGrey,
                                   ),
                                 ),
-                                style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+                                style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
                                 textAlign: TextAlign.center,
                               )
                                   : Row(
@@ -192,13 +195,13 @@ class _EnterBloodSugarScreenState extends State<EnterBloodSugarScreen> {
                                 children: [
                                   Text(
                                     _bloodSugar.toStringAsFixed(1),
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 48,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  SizedBox(width: 8),
-                                  Text(
+                                  const SizedBox(width: 8),
+                                  const Text(
                                     'mg/dL',
                                     style: TextStyle(
                                       fontSize: 20,
@@ -208,15 +211,15 @@ class _EnterBloodSugarScreenState extends State<EnterBloodSugarScreen> {
                                 ],
                               ),
                             ),
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             _buildBloodSugarLabel(),
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             _buildBloodSugarLevelBar(),
                           ],
                         ),
                       ),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -226,7 +229,7 @@ class _EnterBloodSugarScreenState extends State<EnterBloodSugarScreen> {
                             await _selectDate(context);
                             await _selectTime(context);
                           },
-                          child: Text('Chỉnh sửa'),
+                          child: const Text('Chỉnh sửa'),
                         ),
                       ],
                     ),
@@ -236,13 +239,13 @@ class _EnterBloodSugarScreenState extends State<EnterBloodSugarScreen> {
                         Text(_selectedMeal),
                         TextButton(
                           onPressed: () => _selectMeal(context),
-                          child: Text('Chỉnh sửa'),
+                          child: const Text('Chỉnh sửa'),
                         ),
                       ],
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     TextField(
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Nhập ghi chú của bạn',
                         border: OutlineInputBorder(),
                       ),
@@ -253,18 +256,18 @@ class _EnterBloodSugarScreenState extends State<EnterBloodSugarScreen> {
                         });
                       },
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Card(
                       color: Colors.yellow[100],
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Row(
                           children: [
-                            Icon(Icons.warning, color: Colors.orange),
-                            SizedBox(width: 8),
+                            const Icon(Icons.warning, color: Colors.orange),
+                            const SizedBox(width: 8),
                             Expanded(
                               child: RichText(
-                                text: TextSpan(
+                                text: const TextSpan(
                                   style: TextStyle(fontSize: 16, color: Colors.black),
                                   children: [
                                     TextSpan(
@@ -304,7 +307,7 @@ class _EnterBloodSugarScreenState extends State<EnterBloodSugarScreen> {
             ),
             ElevatedButton(
               onPressed: _saveBloodSugarData,
-              child: Text('Lưu'),
+              child: const Text('Lưu'),
             ),
           ],
         ),
@@ -319,16 +322,16 @@ class _EnterBloodSugarScreenState extends State<EnterBloodSugarScreen> {
     String labelText;
     if (_bloodSugar <= 55) {
       labelText = 'rất thấp';
-      labelStyle = TextStyle(color: Colors.orange, fontSize: 24);
+      labelStyle = const TextStyle(color: Colors.orange, fontSize: 24);
     } else if (_bloodSugar >= 56 && _bloodSugar <= 70) {
       labelText = 'thấp';
       labelStyle = TextStyle(color: Colors.yellow[700], fontSize: 24);
     } else if (_bloodSugar >= 71 && _bloodSugar <= 130) {
       labelText = 'bình thường';
-      labelStyle = TextStyle(color: Colors.green, fontSize: 24);
+      labelStyle = const TextStyle(color: Colors.green, fontSize: 24);
     } else if (_bloodSugar >= 131 && _bloodSugar <= 250) {
       labelText = 'cao';
-      labelStyle = TextStyle(color: Colors.red, fontSize: 24);
+      labelStyle = const TextStyle(color: Colors.red, fontSize: 24);
     } else {
       labelText = 'rất cao';
       labelStyle = TextStyle(color: Colors.red[900], fontSize: 24);
@@ -337,7 +340,7 @@ class _EnterBloodSugarScreenState extends State<EnterBloodSugarScreen> {
     return RichText(
       text: TextSpan(
         text: prefix,
-        style: TextStyle(color: Colors.black, fontSize: 24),
+        style: const TextStyle(color: Colors.black, fontSize: 24),
         children: [
           TextSpan(text: labelText, style: labelStyle),
         ],
