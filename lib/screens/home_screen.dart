@@ -9,16 +9,16 @@ class HomeScreen extends StatelessWidget {
   final String userName;
   final int userId;
 
-  HomeScreen({required this.userName, required this.userId});
+  const HomeScreen({super.key, required this.userName, required this.userId});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Quản lý sức khỏe tiểu đường'),
+        title: const Text('Quản lý sức khỏe tiểu đường'),
         actions: [
           IconButton(
-            icon: Icon(Icons.notifications),
+            icon: const Icon(Icons.notifications),
             onPressed: () {
               // Handle notifications icon press
             },
@@ -32,19 +32,19 @@ class HomeScreen extends StatelessWidget {
             // User Info Header
             Row(
               children: [
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 30,
                   child: Icon(Icons.person, size: 40),
                 ),
-                SizedBox(width: 16),
+                const SizedBox(width: 16),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       userName,
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
-                    Text(
+                    const Text(
                       'Thành viên',
                       style: TextStyle(fontSize: 16, color: Colors.grey),
                     ),
@@ -52,7 +52,7 @@ class HomeScreen extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // Grid View
             Expanded(
               child: GridView.count(
@@ -72,7 +72,7 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: [
+        items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Trang chủ'),
           BottomNavigationBarItem(icon: Icon(Icons.article), label: 'Bài học'),
           BottomNavigationBarItem(icon: Icon(Icons.question_answer), label: 'Hỏi đáp'),
@@ -85,13 +85,13 @@ class HomeScreen extends StatelessWidget {
           if (index == 2) {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ChatbotScreen()),
+              MaterialPageRoute(builder: (context) => const ChatbotScreen()),
             );
           }
           if (index == 1) {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => LessonScreen()),
+              MaterialPageRoute(builder: (context) => const LessonScreen()),
             );
           }
           // if (index == 3) {
@@ -137,8 +137,8 @@ class HomeScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(icon, size: 40, color: Colors.teal),
-              Spacer(),
-              Text(title, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              const Spacer(),
+              Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             ],
           ),
         ),
