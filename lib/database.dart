@@ -337,11 +337,11 @@ class DatabaseHelper {
 
   Future<double?> getMinSystolicPressure(int userId) async {
     Database? db = await instance.database;
-    var result = await db?.rawQuery(
+    var result = await db.rawQuery(
         'SELECT MIN(systolic) as minSystolic FROM blood_pressure WHERE user_id = ?',
         [userId]
     );
-    if (result != null && result.isNotEmpty) {
+    if (result.isNotEmpty) {
       return result.first['minSystolic'] as double?;
     }
     return null;
@@ -349,11 +349,11 @@ class DatabaseHelper {
 
   Future<double?> getAverageSystolicPressure(int userId) async {
     Database? db = await instance.database;
-    var result = await db?.rawQuery(
+    var result = await db.rawQuery(
         'SELECT AVG(systolic) as avgSystolic FROM blood_pressure WHERE user_id = ?',
         [userId]
     );
-    if (result != null && result.isNotEmpty) {
+    if (result.isNotEmpty) {
       return result.first['avgSystolic'] as double?;
     }
     return null;
@@ -361,11 +361,11 @@ class DatabaseHelper {
 
   Future<double?> getMaxSystolicPressure(int userId) async {
     Database? db = await instance.database;
-    var result = await db?.rawQuery(
+    var result = await db.rawQuery(
         'SELECT MAX(systolic) as maxSystolic FROM blood_pressure WHERE user_id = ?',
         [userId]
     );
-    if (result != null && result.isNotEmpty) {
+    if (result.isNotEmpty) {
       return result.first['maxSystolic'] as double?;
     }
     return null;
@@ -373,11 +373,11 @@ class DatabaseHelper {
 
   Future<double?> getMinDiastolicPressure(int userId) async {
     Database? db = await instance.database;
-    var result = await db?.rawQuery(
+    var result = await db.rawQuery(
         'SELECT MIN(diastolic) as minDiastolic FROM blood_pressure WHERE user_id = ?',
         [userId]
     );
-    if (result != null && result.isNotEmpty) {
+    if (result.isNotEmpty) {
       return result.first['minDiastolic'] as double?;
     }
     return null;
@@ -385,11 +385,11 @@ class DatabaseHelper {
 
   Future<double?> getAverageDiastolicPressure(int userId) async {
     Database? db = await instance.database;
-    var result = await db?.rawQuery(
+    var result = await db.rawQuery(
         'SELECT AVG(diastolic) as avgDiastolic FROM blood_pressure WHERE user_id = ?',
         [userId]
     );
-    if (result != null && result.isNotEmpty) {
+    if (result.isNotEmpty) {
       return result.first['avgDiastolic'] as double?;
     }
     return null;
@@ -397,11 +397,11 @@ class DatabaseHelper {
 
   Future<double?> getMaxDiastolicPressure(int userId) async {
     Database? db = await instance.database;
-    var result = await db?.rawQuery(
+    var result = await db.rawQuery(
         'SELECT MAX(diastolic) as maxDiastolic FROM blood_pressure WHERE user_id = ?',
         [userId]
     );
-    if (result != null && result.isNotEmpty) {
+    if (result.isNotEmpty) {
       return result.first['maxDiastolic'] as double?;
     }
     return null;
@@ -432,5 +432,15 @@ class DatabaseHelper {
   Future<int> insertWeight(Map<String, dynamic> weight) async {
     final db = await database;
     return await db.insert('tbl_weight', weight);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchWeightData(int userId) async {
+    Database? db = await instance.database;
+    return await db.query(
+      'tbl_weight',
+      where: 'user_id = ?',
+      whereArgs: [userId],
+      orderBy: 'date ASC', // Sắp xếp theo ngày để hiển thị đúng thứ tự
+    );
   }
 }
