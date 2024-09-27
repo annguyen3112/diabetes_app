@@ -3,16 +3,18 @@ import 'package:diabetes_app/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
 
 class WelcomeScreen extends StatelessWidget{
+  const WelcomeScreen({super.key});
+
   @override
   Widget build(BuildContext context){
     return Material(
       child: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: Column(
           children: [
-            SizedBox(height: 15),
+            const SizedBox(height: 15),
             Align(
               alignment: Alignment.centerRight,
               child: TextButton(
@@ -21,7 +23,7 @@ class WelcomeScreen extends StatelessWidget{
                   //     builder: context) =>
                   // ));
                 },
-                child: Text(
+                child: const Text(
                   "BỎ QUA",
                   style: TextStyle(
                     color: Color(0xFF7165D6),
@@ -30,13 +32,13 @@ class WelcomeScreen extends StatelessWidget{
                 ),
               ),
             ),
-            SizedBox(height: 50),
+            const SizedBox(height: 50),
             Padding(
-                padding: EdgeInsets.all(20),
+                padding: const EdgeInsets.all(20),
                 child: Image.asset("assets/diabetes.png"),
             ),
-            SizedBox(height: 50),
-            Text(
+            const SizedBox(height: 50),
+            const Text(
               "TIDU APP",
               style: TextStyle(
                 color: Color(0xFF7165D6),
@@ -46,8 +48,8 @@ class WelcomeScreen extends StatelessWidget{
                 wordSpacing: 2,
               ),
             ),
-            SizedBox(height: 10),
-            Text(
+            const SizedBox(height: 10),
+            const Text(
               "Ứng dụng quản lý sức khỏe tiểu đường",
               style: TextStyle(
                 color: Colors.black54,
@@ -57,20 +59,20 @@ class WelcomeScreen extends StatelessWidget{
                 wordSpacing: 2,
               ),
             ),
-            SizedBox(height: 60),
+            const SizedBox(height: 60),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Material(
-                  color: Color(0xFF7165D6),
+                  color: const Color(0xFF7165D6),
                   borderRadius: BorderRadius.circular(10),
                   child: InkWell(
                     onTap: (){
                       Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => LoginScreen(),
+                          builder: (context) => const LoginScreen(),
                       ));
                     },
-                    child: Padding(
+                    child: const Padding(
                       padding: EdgeInsets.symmetric(vertical: 15, horizontal: 40),
                       child: Text(
                         "Đăng nhập",
@@ -84,15 +86,15 @@ class WelcomeScreen extends StatelessWidget{
                   ),
                 ),
                 Material(
-                  color: Color(0xFF7165D6),
+                  color: const Color(0xFF7165D6),
                   borderRadius: BorderRadius.circular(10),
                   child: InkWell(
                     onTap: (){
                       Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => SignupScreen(),
+                          builder: (context) => const SignupScreen(),
                       ));
                     },
-                    child: Padding(
+                    child: const Padding(
                       padding: EdgeInsets.symmetric(vertical: 15, horizontal: 40),
                       child: Text(
                         "Đăng ký",
