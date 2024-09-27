@@ -1,13 +1,12 @@
 import 'package:diabetes_app/database.dart';
 import 'package:diabetes_app/screens/blood_pressure_result_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class BloodPressureScreen extends StatefulWidget {
   final int userId;
 
-  BloodPressureScreen({required this.userId});
+  const BloodPressureScreen({super.key, required this.userId});
 
   @override
   _BloodPressureScreenState createState() => _BloodPressureScreenState();
@@ -64,47 +63,47 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     ListTile(
-                      title: Text('Thức giấc'),
+                      title: const Text('Thức giấc'),
                       onTap: () => Navigator.pop(context, 'Thức giấc'),
                     ),
                     ListTile(
-                      title: Text('Trước ăn sáng'),
+                      title: const Text('Trước ăn sáng'),
                       onTap: () => Navigator.pop(context, 'Trước ăn sáng'),
                     ),
                     ListTile(
-                      title: Text('Sau ăn sáng'),
+                      title: const Text('Sau ăn sáng'),
                       onTap: () => Navigator.pop(context, 'Sau ăn sáng'),
                     ),
                     ListTile(
-                      title: Text('Trước ăn trưa'),
+                      title: const Text('Trước ăn trưa'),
                       onTap: () => Navigator.pop(context, 'Trước ăn trưa'),
                     ),
                     ListTile(
-                      title: Text('Sau ăn trưa'),
+                      title: const Text('Sau ăn trưa'),
                       onTap: () => Navigator.pop(context, 'Sau ăn trưa'),
                     ),
                     ListTile(
-                      title: Text('Trước ăn tối'),
+                      title: const Text('Trước ăn tối'),
                       onTap: () => Navigator.pop(context, 'Trước ăn tối'),
                     ),
                     ListTile(
-                      title: Text('Sau ăn tối'),
+                      title: const Text('Sau ăn tối'),
                       onTap: () => Navigator.pop(context, 'Sau ăn tối'),
                     ),
                     ListTile(
-                      title: Text('Trước tập thể dục'),
+                      title: const Text('Trước tập thể dục'),
                       onTap: () => Navigator.pop(context, 'Trước tập thể dục'),
                     ),
                     ListTile(
-                      title: Text('Sau tập thể dục'),
+                      title: const Text('Sau tập thể dục'),
                       onTap: () => Navigator.pop(context, 'Sau tập thể dục'),
                     ),
                     ListTile(
-                      title: Text('Giờ đi ngủ'),
+                      title: const Text('Giờ đi ngủ'),
                       onTap: () => Navigator.pop(context, 'Giờ đi ngủ'),
                     ),
                     ListTile(
-                      title: Text('Nửa đêm'),
+                      title: const Text('Nửa đêm'),
                       onTap: () => Navigator.pop(context, 'Nửa đêm'),
                     ),
                   ],
@@ -115,10 +114,11 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
         );
       },
     );
-    if (picked != null)
+    if (picked != null) {
       setState(() {
         _selectedMeal = picked;
       });
+    }
   }
 
   // Function to determine the level based on systolic value
@@ -281,7 +281,7 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
     return RichText(
       text: TextSpan(
         text: prefix,
-        style: TextStyle(color: Colors.black, fontSize: 24),
+        style: const TextStyle(color: Colors.black, fontSize: 24),
         children: [
           TextSpan(text: labelText, style: TextStyle(color: labelColor, fontSize: 24)),
         ],
@@ -301,10 +301,10 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
           backgroundColor: Colors.grey[300],
           minHeight: 8,
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         // Conditionally show the error message
         if (isDifferenceUnsafe)
-          Text(
+          const Text(
             'Chỉ số huyết áp trong ngưỡng không an toàn. Vui lòng kiểm tra lại hoặc cho biết lí do.',
             style: TextStyle(color: Colors.red, fontSize: 16),
           ),
@@ -317,7 +317,7 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Nhập chỉ số huyết áp'),
+        title: const Text('Nhập chỉ số huyết áp'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -326,17 +326,17 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildBloodPressureInput(),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               _buildHeartRateInput(),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               _buildDateTimeInput(),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               _buildMealInput(),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               _buildNoteInput(),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               _buildNote(),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               _buildSaveButton(),
             ],
           ),
@@ -354,7 +354,7 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
+            const Row(
               children: [
                 Icon(Icons.monitor_heart_outlined),
                 SizedBox(width: 5),
@@ -362,19 +362,19 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ],
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _buildPressureTextField(systolicController, 'Tâm thu'),
-                Text('/'),
+                const Text('/'),
                 _buildPressureTextField(diastolicController, 'Tâm trương'),
-                Text('mmHg'),
+                const Text('mmHg'),
               ],
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             _buildBloodPressureLabel(),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             _buildBloodPressureLevelBar(),
           ],
         ),
@@ -388,7 +388,7 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
         controller: controller,
         keyboardType: TextInputType.number,
         textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 24),
+        style: const TextStyle(fontSize: 24),
         decoration: InputDecoration(
           hintText: label,
           border: InputBorder.none,
@@ -414,7 +414,7 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
+            const Row(
               children: [
                 Icon(Icons.favorite_outline_rounded),
                 SizedBox(width: 5),
@@ -422,17 +422,17 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ],
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             TextField(
               controller: heartRateController,
               keyboardType: TextInputType.number,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 24),
+              style: const TextStyle(fontSize: 24),
               inputFormatters: [
                 FilteringTextInputFormatter.digitsOnly,
                 LengthLimitingTextInputFormatter(3),
               ],
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 suffixText: 'lần/phút',
                 suffixStyle: TextStyle(color: Colors.black, fontSize: 18),
                 border: InputBorder.none,
@@ -479,7 +479,7 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
+              const Row(
                 children: [
                   Icon(Icons.calendar_today),
                   SizedBox(width: 5),
@@ -488,13 +488,13 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
                       TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 ],
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     "${dateController.text} ${timeController.text}",
-                    style: TextStyle(fontSize: 18),
+                    style: const TextStyle(fontSize: 18),
                   ),
                 ],
               ),
@@ -514,18 +514,18 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
+            const Row(
               children: [
                 Icon(Icons.timer_outlined),
                 SizedBox(width: 5),
                 Text('Thời điểm đo', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ],
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             GestureDetector(
               onTap: () => _selectMeal(context),
               child: Container(
-                padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(8.0),
@@ -533,8 +533,8 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(_selectedMeal, style: TextStyle(fontSize: 16)),
-                    Icon(Icons.arrow_drop_down),
+                    Text(_selectedMeal, style: const TextStyle(fontSize: 16)),
+                    const Icon(Icons.arrow_drop_down),
                   ],
                 ),
               ),
@@ -554,17 +554,17 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
+            const Row(
               children: [
                 Icon(Icons.sticky_note_2_outlined),
                 SizedBox(width: 5),
                 Text('Ghi chú', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ],
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             TextField(
               controller: noteController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: InputBorder.none,
               ),
               maxLines: 3,
@@ -582,11 +582,11 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Row(
           children: [
-            Icon(Icons.warning, color: Colors.orange),
-            SizedBox(width: 8),
+            const Icon(Icons.warning, color: Colors.orange),
+            const SizedBox(width: 8),
             Expanded(
               child: RichText(
-                text: TextSpan(
+                text: const TextSpan(
                   style: TextStyle(fontSize: 16, color: Colors.black),
                   children: [
                     TextSpan(
@@ -640,7 +640,7 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
         onPressed: () async {
           // Kiểm tra nếu huyết áp không an toàn và chưa nhập lý do
           if (isDifferenceUnsafe && noteController.text.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
               content:
               Text('Chỉ số huyết áp không an toàn. Vui lòng cho biết lí do.'),
               backgroundColor: Colors.red,
@@ -655,7 +655,7 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
 
           // Kiểm tra nếu dữ liệu đầu vào hợp lệ
           if (systolic == 0 || diastolic == 0 || pulse == 0) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
               content: Text('Vui lòng nhập đầy đủ chỉ số huyết áp và nhịp tim.'),
               backgroundColor: Colors.red,
             ));
@@ -675,7 +675,7 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
           });
 
           // Hiển thị thông báo lưu thành công
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text('Dữ liệu huyết áp đã được lưu thành công.'),
             backgroundColor: Colors.green,
           ));
@@ -687,7 +687,7 @@ class _BloodPressureScreenState extends State<BloodPressureScreen> {
             ),
           );
         },
-        child: Text('Lưu'),
+        child: const Text('Lưu'),
       ),
     );
   }
