@@ -110,7 +110,7 @@ class _WeightResultScreenState extends State<WeightResultScreen> {
           ),
           SizedBox(height: 10.0),
           Text(
-            'Trọng lượng: 70 kg', // Thay đổi giá trị trọng lượng tương ứng với image analysis
+            'Trọng lượng: 70 kg',
             style: TextStyle(
               fontSize: 18.0,
               fontWeight: FontWeight.bold,
@@ -118,7 +118,7 @@ class _WeightResultScreenState extends State<WeightResultScreen> {
           ),
           SizedBox(height: 10.0),
           Text(
-            'Câu trả lời: Đây là câu trả lời từ image analysis', // Thay đổi câu trả lời tương ứng với image analysis
+            'Câu trả lời: Đây là câu trả lời từ image analysis',
             style: TextStyle(
               fontSize: 16.0,
             ),
