@@ -6,7 +6,7 @@ import 'package:fl_chart/fl_chart.dart';
 class BloodSugarScreen extends StatefulWidget {
   final int userId;
 
-  BloodSugarScreen({required this.userId});
+  const BloodSugarScreen({super.key, required this.userId});
 
   @override
   _BloodSugarScreenState createState() => _BloodSugarScreenState();
@@ -61,16 +61,16 @@ class _BloodSugarScreenState extends State<BloodSugarScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Đường huyết'),
+        title: const Text('Đường huyết'),
         actions: [
           IconButton(
-            icon: Icon(Icons.help_outline),
+            icon: const Icon(Icons.help_outline),
             onPressed: () {
               // Handle help icon press
             },
           ),
           IconButton(
-            icon: Icon(Icons.close),
+            icon: const Icon(Icons.close),
             onPressed: () {
               Navigator.pop(context);
             },
@@ -83,7 +83,7 @@ class _BloodSugarScreenState extends State<BloodSugarScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Title and Options
-            Row(
+            const Row(
               children: [
                 Icon(Icons.monitor_heart_outlined, size: 30, color: Colors.teal),
                 SizedBox(width: 8),
@@ -99,9 +99,9 @@ class _BloodSugarScreenState extends State<BloodSugarScreen> {
                 Icon(Icons.filter_alt, size: 20, color: Colors.grey),
               ],
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             // Tab Bar
-            DefaultTabController(
+            const DefaultTabController(
               length: 2,
               child: TabBar(
                 labelColor: Colors.teal,
@@ -112,7 +112,7 @@ class _BloodSugarScreenState extends State<BloodSugarScreen> {
                 ],
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             // Content Area
             Expanded(
               child: ListView(
@@ -124,7 +124,7 @@ class _BloodSugarScreenState extends State<BloodSugarScreen> {
                       future: DatabaseHelper.instance.getLatestBloodSugar(widget.userId),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting) {
-                          return Center(child: CircularProgressIndicator());
+                          return const Center(child: CircularProgressIndicator());
                         } else if (snapshot.hasError) {
                           return Center(child: Text('Error: ${snapshot.error}'));
                         } else if (!snapshot.hasData || snapshot.data == null) {
@@ -135,9 +135,9 @@ class _BloodSugarScreenState extends State<BloodSugarScreen> {
                         }
                       },
                     ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   _buildMinAvgMaxSection(),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   _buildTrendChart(),
                 ],
               ),
@@ -160,8 +160,8 @@ class _BloodSugarScreenState extends State<BloodSugarScreen> {
             });
           }
         },
-        child: Icon(Icons.add),
         backgroundColor: Colors.teal,
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -177,10 +177,10 @@ class _BloodSugarScreenState extends State<BloodSugarScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Gần nhất', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            SizedBox(height: 8),
-            Text('Chưa có dữ liệu chỉ số đường huyết. Vui lòng nhập để theo dõi tình trạng bệnh.', style: TextStyle(fontSize: 16, color: Colors.grey)),
-            SizedBox(height: 16),
+            const Text('Gần nhất', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            const Text('Chưa có dữ liệu chỉ số đường huyết. Vui lòng nhập để theo dõi tình trạng bệnh.', style: TextStyle(fontSize: 16, color: Colors.grey)),
+            const SizedBox(height: 16),
             ElevatedButton.icon(
               onPressed: () {
                 Navigator.push(
@@ -190,8 +190,8 @@ class _BloodSugarScreenState extends State<BloodSugarScreen> {
                   ),
                 );
               },
-              icon: Icon(Icons.add),
-              label: Text('Nhập chỉ số'),
+              icon: const Icon(Icons.add),
+              label: const Text('Nhập chỉ số'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.teal,
               ),
@@ -240,17 +240,17 @@ class _BloodSugarScreenState extends State<BloodSugarScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Gần nhất', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            SizedBox(height: 8),
+            const Text('Gần nhất', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '${level} mg/dL',
+                  '$level mg/dL',
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: textColor),
                 ),
                 Container(
-                  padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                   decoration: BoxDecoration(
                     color: backgroundColor,
                     borderRadius: BorderRadius.circular(8),
@@ -262,8 +262,8 @@ class _BloodSugarScreenState extends State<BloodSugarScreen> {
                 ),
               ],
             ),
-            SizedBox(height: 8),
-            Text('${data['time']}, ${data['moment']}', style: TextStyle(fontSize: 16, color: Colors.grey)),
+            const SizedBox(height: 8),
+            Text('${data['time']}, ${data['moment']}', style: const TextStyle(fontSize: 16, color: Colors.grey)),
           ],
         ),
       ),
@@ -297,7 +297,7 @@ class _BloodSugarScreenState extends State<BloodSugarScreen> {
                 label,
                 style: TextStyle(fontSize: 16, color: color),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text(
                 value != null ? '${value.toStringAsFixed(1)} mg/dL' : 'N/A',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: color),
@@ -311,7 +311,7 @@ class _BloodSugarScreenState extends State<BloodSugarScreen> {
 
   Widget _buildTrendChart() {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.teal.shade50,
         borderRadius: BorderRadius.circular(16),
@@ -319,11 +319,11 @@ class _BloodSugarScreenState extends State<BloodSugarScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             'Biểu đồ xu hướng',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.teal),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           _bloodSugarSpots.isNotEmpty
               ? SizedBox(
             height: 250,
@@ -363,7 +363,7 @@ class _BloodSugarScreenState extends State<BloodSugarScreen> {
               ),
             ),
           )
-              : Center(
+              : const Center(
             child: Text(
               'Chưa có đủ dữ liệu để hiển thị biểu đồ.',
               style: TextStyle(fontSize: 16, color: Colors.teal),
