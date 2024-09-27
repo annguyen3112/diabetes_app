@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -22,7 +24,13 @@ class _LoginScreenState extends State<LoginScreen> {
     final user = await DatabaseHelper.instance.getUserByPhoneAndPassword(phone, password);
 
     if (user != null) {
-      _showSuccessSnackBar('Đăng nhập thành công!');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Đăng nhập thành công!'),
+          duration: const Duration(seconds: 2),
+          backgroundColor: Colors.green,
+        ),
+      );
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -32,16 +40,17 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       );
-    } else {
-      _showErrorSnackBar('Số điện thoại hoặc mật khẩu không đúng');
     }
+      // else {
+    //   _showErrorSnackBar('Số điện thoại hoặc mật khẩu không đúng');
+    // }
   }
 
   void _showErrorSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        duration: Duration(seconds: 2),
+        duration: const Duration(seconds: 2),
       ),
     );
   }
@@ -50,8 +59,8 @@ class _LoginScreenState extends State<LoginScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        duration: Duration(seconds: 2),
-        backgroundColor: Colors.green, // Màu nền của thông báo thành công
+        duration: const Duration(seconds: 2),
+        backgroundColor: Colors.green,
       ),
     );
   }
@@ -64,14 +73,14 @@ class _LoginScreenState extends State<LoginScreen> {
         child: SafeArea(
           child: Column(
             children: [
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Padding(
-                padding: EdgeInsets.all(20),
+                padding: const EdgeInsets.all(20),
                 child: Image.asset("assets/diabetes.png"),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
                 child: TextFormField(
                   controller: _phoneController,
                   keyboardType: TextInputType.phone,
@@ -79,7 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     FilteringTextInputFormatter.digitsOnly,
                     LengthLimitingTextInputFormatter(10),
                   ],
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: "Số điện thoại",
                     border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.phone),
@@ -87,14 +96,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(12),
+                padding: const EdgeInsets.all(12),
                 child: TextField(
                   controller: _passwordController,
                   obscureText: passToggle,
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                     labelText: "Nhập mật khẩu",
-                    prefixIcon: Icon(Icons.lock),
+                    prefixIcon: const Icon(Icons.lock),
                     suffixIcon: InkWell(
                       onTap: () {
                         setState(() {
@@ -110,17 +119,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.all(10),
                 child: SizedBox(
                   width: double.infinity,
                   child: Material(
-                    color: Color(0xFF7165D6),
+                    color: const Color(0xFF7165D6),
                     borderRadius: BorderRadius.circular(10),
                     child: InkWell(
                       onTap: _loginUser,
-                      child: Padding(
+                      child: const Padding(
                         padding:
                         EdgeInsets.symmetric(vertical: 15, horizontal: 40),
                         child: Center(
@@ -138,11 +147,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     "Chưa có tài khoản?",
                     style: TextStyle(
                       fontSize: 16,
@@ -155,9 +164,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => SignupScreen()));
+                              builder: (context) => const SignupScreen()));
                     },
-                    child: Text(
+                    child: const Text(
                       "Tạo tài khoản",
                       style: TextStyle(
                         fontSize: 18,
