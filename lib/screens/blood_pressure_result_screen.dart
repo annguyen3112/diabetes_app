@@ -1,11 +1,12 @@
 import 'package:diabetes_app/database.dart';
+import 'package:diabetes_app/screens/blood_pressure_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 class BloodPressureResultScreen extends StatefulWidget {
   final int userId;
 
-  BloodPressureResultScreen({required this.userId});
+  const BloodPressureResultScreen({super.key, required this.userId});
 
   @override
   _BloodPressureResultScreenState createState() => _BloodPressureResultScreenState();
@@ -13,12 +14,16 @@ class BloodPressureResultScreen extends StatefulWidget {
 
 class _BloodPressureResultScreenState extends State<BloodPressureResultScreen> {
   Map<String, dynamic>? _latestBloodPressureData;
+  List<Map<String, dynamic>> bloodPressureDataList = [];
   double? _minSystolic;
   double? _avgSystolic;
   double? _maxSystolic;
   double? _minDiastolic;
   double? _avgDiastolic;
   double? _maxDiastolic;
+  double? _minHeartRate;
+  double? _avgHeartRate;
+  double? _maxHeartRate;
   List<FlSpot> _systolicSpots = [];
   List<FlSpot> _diastolicSpots = [];
 
@@ -27,27 +32,41 @@ class _BloodPressureResultScreenState extends State<BloodPressureResultScreen> {
     super.initState();
     _fetchBloodPressureData();
     _fetchBloodPressureTrendData();
+    _getHeartRateData();
+    //_getBloodPressureData();
+  }
+
+  Future<void> _getHeartRateData() async {
+    final data = await DatabaseHelper.instance.getHeartRateData(widget.userId);
+    if (data != null) {
+      setState(() {
+        _minHeartRate = data['minHeartRate'];
+        _avgHeartRate = data['avgHeartRate'];
+        _maxHeartRate = data['maxHeartRate'];
+      });
+    }
   }
 
   Future<void> _fetchBloodPressureData() async {
     final dbHelper = DatabaseHelper.instance;
-    final latestData = await dbHelper.getLatestBloodPressure(widget.userId);
-    final minSystolic = await dbHelper.getMinSystolicPressure(widget.userId);
-    final avgSystolic = await dbHelper.getAverageSystolicPressure(widget.userId);
-    final maxSystolic = await dbHelper.getMaxSystolicPressure(widget.userId);
-    final minDiastolic = await dbHelper.getMinDiastolicPressure(widget.userId);
-    final avgDiastolic = await dbHelper.getAverageDiastolicPressure(widget.userId);
-    final maxDiastolic = await dbHelper.getMaxDiastolicPressure(widget.userId);
+
+    // Lấy dữ liệu từ cơ sở dữ liệu
+    final data = await dbHelper.getBloodPressureData(widget.userId);
 
     setState(() {
-      _latestBloodPressureData = latestData;
-      _minSystolic = minSystolic;
-      _avgSystolic = avgSystolic;
-      _maxSystolic = maxSystolic;
-      _minDiastolic = minDiastolic;
-      _avgDiastolic = avgDiastolic;
-      _maxDiastolic = maxDiastolic;
+      bloodPressureDataList = data;
+      if (bloodPressureDataList.isNotEmpty) {
+        _latestBloodPressureData = bloodPressureDataList.last;
+      }
     });
+
+    // Cập nhật các giá trị min, avg, max
+    _minSystolic = await dbHelper.getMinSystolicPressure(widget.userId);
+    _avgSystolic = await dbHelper.getAverageSystolicPressure(widget.userId);
+    _maxSystolic = await dbHelper.getMaxSystolicPressure(widget.userId);
+    _minDiastolic = await dbHelper.getMinDiastolicPressure(widget.userId);
+    _avgDiastolic = await dbHelper.getAverageDiastolicPressure(widget.userId);
+    _maxDiastolic = await dbHelper.getMaxDiastolicPressure(widget.userId);
   }
 
   Future<void> _fetchBloodPressureTrendData() async {
@@ -57,14 +76,14 @@ class _BloodPressureResultScreenState extends State<BloodPressureResultScreen> {
     List<FlSpot> systolicSpots = bloodPressureData.map<FlSpot>((data) {
       final date = DateTime.parse(data['date']);
       final dayOfMonth = date.day.toDouble();
-      final systolic = data['systolic'] as double;
+      final systolic = (data['systolic'] as num).toDouble();
       return FlSpot(dayOfMonth, systolic);
     }).toList();
 
     List<FlSpot> diastolicSpots = bloodPressureData.map<FlSpot>((data) {
       final date = DateTime.parse(data['date']);
       final dayOfMonth = date.day.toDouble();
-      final diastolic = data['diastolic'] as double;
+      final diastolic = (data['diastolic'] as num).toDouble();
       return FlSpot(dayOfMonth, diastolic);
     }).toList();
 
@@ -78,16 +97,16 @@ class _BloodPressureResultScreenState extends State<BloodPressureResultScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Huyết áp'),
+        title: const Text('Huyết áp'),
         actions: [
           IconButton(
-            icon: Icon(Icons.help_outline),
+            icon: const Icon(Icons.help_outline),
             onPressed: () {
               // Handle help icon press
             },
           ),
           IconButton(
-            icon: Icon(Icons.close),
+            icon: const Icon(Icons.close),
             onPressed: () {
               Navigator.pop(context);
             },
@@ -99,7 +118,7 @@ class _BloodPressureResultScreenState extends State<BloodPressureResultScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
+            const Row(
               children: [
                 Icon(Icons.monitor_heart_outlined, size: 30, color: Colors.teal),
                 SizedBox(width: 8),
@@ -115,8 +134,8 @@ class _BloodPressureResultScreenState extends State<BloodPressureResultScreen> {
                 Icon(Icons.filter_alt, size: 20, color: Colors.grey),
               ],
             ),
-            SizedBox(height: 16),
-            DefaultTabController(
+            const SizedBox(height: 16),
+            const DefaultTabController(
               length: 2,
               child: TabBar(
                 labelColor: Colors.teal,
@@ -127,37 +146,36 @@ class _BloodPressureResultScreenState extends State<BloodPressureResultScreen> {
                 ],
               ),
             ),
-            SizedBox(height: 16),
+            _buildBloodPressureSection(),
+            _buildHeartRateSection(),
+            const SizedBox(height: 16),
+
+            // Chỉ hiển thị 1 mục gần nhất
             Expanded(
-              child: ListView(
-                children: [
-                  if (_latestBloodPressureData != null)
-                    _buildLatestCard(context, _latestBloodPressureData!)
-                  else
-                    FutureBuilder<Map<String, dynamic>?>(
-                      future: DatabaseHelper.instance.getLatestBloodPressure(widget.userId),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return Center(child: CircularProgressIndicator());
-                        } else if (snapshot.hasError) {
-                          return Center(child: Text('Error: ${snapshot.error}'));
-                        } else if (!snapshot.hasData || snapshot.data == null) {
-                          return _buildEmptyLatestCard(context);
-                        } else {
-                          final data = snapshot.data!;
-                          return _buildLatestCard(context, data);
-                        }
-                      },
-                    ),
-                  SizedBox(height: 16),
-                  _buildMinAvgMaxSection(),
-                  SizedBox(height: 16),
-                  //_buildTrendChart(),
-                ],
-              ),
+              child: _latestBloodPressureData != null
+                  ? _buildLatestCard(context, _latestBloodPressureData!)
+                  : _buildEmptyLatestCard(context),
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => BloodPressureScreen(userId: widget.userId),
+            ),
+          );
+          // if (result != null) {
+          //   setState(() {
+          //     _latestBloodSugarData = result;
+          //     _fetchBloodSugarTrendData();
+          //   });
+          // }
+        },
+        backgroundColor: Colors.teal,
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -173,16 +191,16 @@ class _BloodPressureResultScreenState extends State<BloodPressureResultScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Gần nhất', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            SizedBox(height: 8),
-            Text('Chưa có dữ liệu huyết áp. Vui lòng nhập để theo dõi tình trạng.', style: TextStyle(fontSize: 16, color: Colors.grey)),
-            SizedBox(height: 16),
+            const Text('Gần nhất', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            const Text('Chưa có dữ liệu huyết áp. Vui lòng nhập để theo dõi tình trạng.', style: TextStyle(fontSize: 16, color: Colors.grey)),
+            const SizedBox(height: 16),
             ElevatedButton.icon(
               onPressed: () {
                 // Navigate to blood pressure input screen
               },
-              icon: Icon(Icons.add),
-              label: Text('Nhập chỉ số'),
+              icon: const Icon(Icons.add),
+              label: const Text('Nhập chỉ số'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.teal,
               ),
@@ -194,28 +212,77 @@ class _BloodPressureResultScreenState extends State<BloodPressureResultScreen> {
   }
 
   Widget _buildLatestCard(BuildContext context, Map<String, dynamic> data) {
-    final double systolic = data['systolic'];
-    final double diastolic = data['diastolic'];
+    final double systolic = (data['systolic'] as num).toDouble();
+    final double diastolic = (data['diastolic'] as num).toDouble();
     String statusText;
     Color textColor;
     Color backgroundColor;
 
-    // Determine the status based on blood pressure ranges
-    if (systolic < 90 && diastolic < 60) {
-      statusText = 'Thấp';
-      textColor = Colors.orange;
-      backgroundColor = Colors.orange.shade100;
-    } else if (systolic <= 130 && diastolic <= 85) {
-      statusText = 'Bình thường';
-      textColor = Colors.green;
-      backgroundColor = Colors.green.shade100;
-    } else if (systolic <= 140 && diastolic <= 90) {
+    if (systolic < 90) {
+      if (diastolic < 90) {
+        statusText = 'Thấp';
+        textColor = Colors.orange;
+        backgroundColor = Colors.orange.shade100;
+      } else if (diastolic >= 90 && diastolic < 100) {
+        statusText = 'Tăng huyết áp độ 1';
+        textColor = Colors.red;
+        backgroundColor = Colors.red.shade100;
+      } else if (diastolic >= 100 && diastolic < 110) {
+        statusText = 'Tăng huyết áp độ 2';
+        textColor = Colors.red[700]!;
+        backgroundColor = Colors.red.shade100;
+      } else {
+        statusText = 'Tăng huyết áp độ 3';
+        textColor = Colors.red[900]!;
+        backgroundColor = Colors.red.shade100;
+      }
+    } else if (systolic >= 90 && systolic < 100) {
+      if (diastolic > 90 && diastolic < 100) {
+        statusText = 'Tăng huyết áp độ 1';
+        textColor = Colors.red;
+        backgroundColor = Colors.red.shade100;
+      } else if (diastolic >= 100 && diastolic < 110) {
+        statusText = 'Tăng huyết áp độ 2';
+        textColor = Colors.red[700]!;
+        backgroundColor = Colors.red.shade100;
+      } else if (diastolic >= 110) {
+        statusText = 'Tăng huyết áp độ 3';
+        textColor = Colors.red[900]!;
+        backgroundColor = Colors.red.shade100;
+      } else {
+        statusText = 'Bình thường';
+        textColor = Colors.green;
+        backgroundColor = Colors.green.shade100;
+      }
+    } else if (systolic >= 100 && systolic < 130) {
+      if (diastolic > 110) {
+        statusText = 'Tăng huyết áp độ 3';
+        textColor = Colors.red[900]!;
+        backgroundColor = Colors.red.shade100;
+      } else {
+        statusText = 'Bình thường';
+        textColor = Colors.green;
+        backgroundColor = Colors.green.shade100;
+      }
+    } else if (systolic >= 130 && systolic < 140) {
       statusText = 'Bình thường cao';
-      textColor = Colors.yellow;
-      backgroundColor = Colors.yellow.shade100;
+      textColor = Colors.green[900]!;
+      backgroundColor = Colors.green.shade100;
+    } else if (systolic >= 140 && systolic < 160) {
+        statusText = 'Tăng huyết áp độ 1';
+        textColor = Colors.red;
+        backgroundColor = Colors.red.shade100;
+    } else if (systolic >= 160 && systolic < 180) {
+        statusText = 'Tăng huyết áp độ 2';
+        textColor = Colors.red[700]!;
+        backgroundColor = Colors.red.shade100;
+    } else if (systolic >= 180) {
+      statusText = 'Tăng huyết áp độ 3';
+      textColor = Colors.red[900]!;
+      backgroundColor = Colors.red.shade100;
     } else {
-      statusText = 'Cao';
-      textColor = Colors.red;
+      statusText = 'Không xác định';
+      textColor = Colors.grey;
       backgroundColor = Colors.red.shade100;
     }
 
@@ -229,17 +296,17 @@ class _BloodPressureResultScreenState extends State<BloodPressureResultScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Gần nhất', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            SizedBox(height: 8),
+            const Text('Gần nhất', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '${systolic}/$diastolic mmHg',
+                  '${systolic.toStringAsFixed(0)}/$diastolic mmHg', // Hiển thị đúng giá trị
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: textColor),
                 ),
                 Container(
-                  padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                   decoration: BoxDecoration(
                     color: backgroundColor,
                     borderRadius: BorderRadius.circular(8),
@@ -251,13 +318,14 @@ class _BloodPressureResultScreenState extends State<BloodPressureResultScreen> {
                 ),
               ],
             ),
-            SizedBox(height: 8),
-            Text('${data['time']}, ${data['moment']}', style: TextStyle(fontSize: 16, color: Colors.grey)),
+            const SizedBox(height: 8),
+            Text('${data['time']}, ${data['moment']}', style: const TextStyle(fontSize: 16, color: Colors.grey)),
           ],
         ),
       ),
     );
   }
+
 
   Widget _buildMinAvgMaxSection() {
     return Card(
@@ -270,8 +338,8 @@ class _BloodPressureResultScreenState extends State<BloodPressureResultScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Tần suất phân bố', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            SizedBox(height: 8),
+            const Text('Tần suất phân bố', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -286,70 +354,77 @@ class _BloodPressureResultScreenState extends State<BloodPressureResultScreen> {
     );
   }
 
-  Widget _buildMinAvgMaxCard(String title, double? systolic, double? diastolic, Color color) {
+  Widget _buildMinAvgMaxCard(String title, double? value1, double? value2, Color color) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: TextStyle(fontSize: 16)),
-        SizedBox(height: 4),
+        Text(title, style: const TextStyle(fontSize: 16)),
+        const SizedBox(height: 4),
         Text(
-          systolic != null && diastolic != null
-              ? '${systolic.toStringAsFixed(0)}/${diastolic.toStringAsFixed(0)} mmHg'
-              : '--/-- mmHg',
+          value1 != null && value2 != null
+              ? '${value1.toStringAsFixed(0)}/${value2.toStringAsFixed(0)} mmHg'
+              : value1 != null
+              ? value1.toStringAsFixed(0)
+              : '--', // Default to '--' if no value
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: color),
         ),
       ],
     );
   }
 
-  // Widget _buildTrendChart() {
-  //   return Card(
-  //     shape: RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.circular(16.0),
-  //     ),
-  //     elevation: 2,
-  //     child: Padding(
-  //       padding: const EdgeInsets.all(16.0),
-  //       child: Column(
-  //         crossAxisAlignment: CrossAxisAlignment.start,
-  //         children: [
-  //           Text('Xu hướng huyết áp', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-  //           SizedBox(height: 16),
-  //           SizedBox(
-  //             height: 200,
-  //             child: LineChart(
-  //               LineChartData(
-  //                 lineBarsData: [
-  //                   LineChartBarData(
-  //                     spots: _systolicSpots,
-  //                     isCurved: true,
-  //                     colors: [Colors.red],
-  //                     barWidth: 4,
-  //                     dotData: FlDotData(show: true),
-  //                   ),
-  //                   LineChartBarData(
-  //                     spots: _diastolicSpots,
-  //                     isCurved: true,
-  //                     colors: [Colors.blue],
-  //                     barWidth: 4,
-  //                     dotData: FlDotData(show: true),
-  //                   ),
-  //                 ],
-  //                 gridData: FlGridData(show: true),
-  //                 titlesData: FlTitlesData(
-  //                   leftTitles: AxisTitles(
-  //                     sideTitles: SideTitles(showTitles: true),
-  //                   ),
-  //                   bottomTitles: AxisTitles(
-  //                     sideTitles: SideTitles(showTitles: true),
-  //                   ),
-  //                 ),
-  //               ),
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
+
+  Widget _buildBloodPressureSection() {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.0),
+      ),
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Huyết áp', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildMinAvgMaxCard('Thấp nhất', _minSystolic, _minDiastolic, Colors.orange),
+                _buildMinAvgMaxCard('Cao nhất', _maxSystolic, _maxDiastolic, Colors.red),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeartRateSection() {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.0),
+      ),
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Nhịp tim', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildMinAvgMaxCard('Thấp nhất', _minHeartRate, null, Colors.blue),
+                _buildMinAvgMaxCard('Trung bình', _avgHeartRate, null, Colors.green),
+                _buildMinAvgMaxCard('Cao nhất', _maxHeartRate, null, Colors.red),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+
 }
