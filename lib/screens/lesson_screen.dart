@@ -5,6 +5,8 @@ import 'package:diabetes_app/database.dart';
 import 'chatbot_screen.dart';
 
 class LessonScreen extends StatefulWidget {
+  const LessonScreen({super.key});
+
   @override
   _LessonScreenState createState() => _LessonScreenState();
 }
@@ -22,12 +24,12 @@ class _LessonScreenState extends State<LessonScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Lịch trình của tôi'),
+        title: const Text('Lịch trình của tôi'),
       ),
       body: Column(
         children: [
           Container(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -41,11 +43,11 @@ class _LessonScreenState extends State<LessonScreen> {
               future: lessons,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text('No lessons available'));
+                  return const Center(child: Text('No lessons available'));
                 } else {
                   return ListView.builder(
                     itemCount: snapshot.data!.length,
@@ -69,7 +71,7 @@ class _LessonScreenState extends State<LessonScreen> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: [
+        items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Trang chủ'),
           BottomNavigationBarItem(icon: Icon(Icons.article), label: 'Bài học'),
           BottomNavigationBarItem(icon: Icon(Icons.question_answer), label: 'Hỏi đáp'),
@@ -82,7 +84,7 @@ class _LessonScreenState extends State<LessonScreen> {
           if (index == 2) {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ChatbotScreen()),
+              MaterialPageRoute(builder: (context) => const ChatbotScreen()),
             );
           }
           // if (index == 0) {
