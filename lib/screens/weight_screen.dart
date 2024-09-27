@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 class WeightScreen extends StatefulWidget {
   final int userId;
 
-  WeightScreen({required this.userId});
+  const WeightScreen({super.key, required this.userId});
 
   @override
   _WeightScreenState createState() => _WeightScreenState();
@@ -31,22 +31,22 @@ class _WeightScreenState extends State<WeightScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Nhập chỉ số cân nặng'),
+        title: const Text('Nhập chỉ số cân nặng'),
       ),
       body: SingleChildScrollView(  // Wrap the body with SingleChildScrollView
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               _buildWeightInput(),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               _buildHeightInput(),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               _buildDateTimeInput(),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               _buildNoteInput(),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               _buildSaveButton(),
             ],
           ),
@@ -64,7 +64,7 @@ class _WeightScreenState extends State<WeightScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
+            const Row(
               children: [
                 Icon(Icons.scale_outlined),
                 SizedBox(width: 5),
@@ -74,17 +74,17 @@ class _WeightScreenState extends State<WeightScreen> {
                 ),
               ],
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             TextField(
               controller: _weightController,
               keyboardType: TextInputType.number,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 24),
+              style: const TextStyle(fontSize: 24),
               inputFormatters: [
                 FilteringTextInputFormatter.digitsOnly,
                 LengthLimitingTextInputFormatter(3),
               ],
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 suffix: Text(
                   'kg',
                   style: TextStyle(color: Colors.black, fontSize: 18),
@@ -107,7 +107,7 @@ class _WeightScreenState extends State<WeightScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
+            const Row(
               children: [
                 Icon(Icons.height_outlined),
                 SizedBox(width: 5),
@@ -117,17 +117,17 @@ class _WeightScreenState extends State<WeightScreen> {
                 ),
               ],
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             TextField(
               controller: _heightController,
               keyboardType: TextInputType.number,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 24),
+              style: const TextStyle(fontSize: 24),
               inputFormatters: [
                 FilteringTextInputFormatter.digitsOnly,
                 LengthLimitingTextInputFormatter(3),
               ],
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 suffix: Text(
                   'cm',
                   style: TextStyle(color: Colors.black, fontSize: 18),
@@ -175,7 +175,7 @@ class _WeightScreenState extends State<WeightScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
+              const Row(
                 children: [
                   Icon(Icons.calendar_today),
                   SizedBox(width: 5),
@@ -184,13 +184,13 @@ class _WeightScreenState extends State<WeightScreen> {
                       TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 ],
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     "${dateController.text} ${timeController.text}",
-                    style: TextStyle(fontSize: 18),
+                    style: const TextStyle(fontSize: 18),
                   ),
                 ],
               ),
@@ -210,17 +210,17 @@ class _WeightScreenState extends State<WeightScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
+            const Row(
               children: [
                 Icon(Icons.sticky_note_2_outlined),
                 SizedBox(width: 5),
                 Text('Ghi chú', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ],
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             TextField(
               controller: noteController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: InputBorder.none,
               ),
               maxLines: 3,
@@ -239,7 +239,7 @@ class _WeightScreenState extends State<WeightScreen> {
           int height = int.tryParse(_heightController.text) ?? 0;
 
           if (weight == 0 || height == 0) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
               content: Text('Vui lòng nhập đầy đủ chỉ số chiều cao và cân nặng.'),
               backgroundColor: Colors.red,
             ));
@@ -255,7 +255,7 @@ class _WeightScreenState extends State<WeightScreen> {
             'note': noteController.text,
           });
 
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text('Dữ liệu cân nặng đã được lưu thành công.'),
             backgroundColor: Colors.green,
           ));
@@ -266,7 +266,7 @@ class _WeightScreenState extends State<WeightScreen> {
               builder: (context) => WeightResultScreen(userId: widget.userId),
           ));
         },
-        child: Text('Lưu'),
+        child: const Text('Lưu'),
       ),
     );
   }
