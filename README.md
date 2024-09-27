@@ -1,16 +1,49 @@
-# diabetes_app
+# Diabetes Health Management App
 
-A new Flutter project.
+## Introduction
+A comprehensive health management application for people with diabetes, integrated with a chatbot for Q&A on diabetes care.
 
-## Getting Started
+## Features
+Blood Sugar Tracking: Log daily blood sugar levels, monitor trends, and receive alerts based on predefined thresholds.
+Blood Pressure Management: Track systolic and diastolic blood pressure and view comprehensive analysis.
+Weight Management: Track weight changes with clear trend charts and set personal health goals.
+Personalized Nutrition and Exercise Plans: Receive meal suggestions and exercise routines tailored to individual health needs.
+Diabetes Lessons: Access informative lessons about diabetes management, from beginner to advanced levels.
+Q&A Chatbot: Ask questions related to diabetes and receive instant responses through an AI-powered chatbot.
 
-This project is a starting point for a Flutter application.
+## Technologies
+Frontend: Flutter (Dart)
+Backend: SQLite (Local Database)
 
-A few resources to get you started if this is your first Flutter project:
+## Installation
+To install and run this application locally, follow these steps:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Usage
+Once the app is up and running, you can:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Register/Login: Create an account or log in with existing credentials.
+Log Health Data: Input blood sugar levels, blood pressure, and weight.
+Set Health Goals: Define goals for weight, blood sugar control, and exercise routines.
+Ask the Chatbot: Navigate to the chatbot feature to ask health-related questions.
+View Trends: Access charts and reports for blood sugar, blood pressure, and weight.
+Educational Content: Learn more about diabetes with provided lessons and tips.
+
+## Screenshots
+<div align="center">
+  <img src="experiments/result1.png">
+</div>
+<div align="center">
+  <img src="experiments/result2.png">
+</div>
+<div align="center">
+  <img src="experiments/result3.png">
+</div>
+<div align="center">
+  <img src="experiments/result4.png">
+</div>
+
+
+## Future Improvements
+Expand the chatbot's knowledge base for better Q&A responses.
+Implement cloud-based data storage for cross-device syncing.
+Add notifications and reminders for logging health metrics and taking medication.
